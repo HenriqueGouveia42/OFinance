@@ -26,7 +26,6 @@ const MonthContent = () => {
                 </div>
                 <div className="flex flex-col justify-center items-center">
                     {isVisible ? <h1 className="font-mono text-xs">R$5.400,00</h1> :  <div className="bg-black w-30">null</div> }
-                    
                     <div className="my-2" onClick={toggleVisibility} style={{cursor: 'pointer'}}>
                         {isVisible ? <FiEye size={20} className="eye-icon" /> : <FiEyeOff size={20} className="eye-icon" />}
                     </div>

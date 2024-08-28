@@ -31,7 +31,7 @@ const NotificationsContent = ({ type, quantity, amount }) => {
 
 const Notifications = () => {
     const { qntd_receitas_pendentes, receitas_pendentes, qntd_despesas_pendentes, despesas_pendentes } = transactions.reduce((acc, item) => {
-        if (!item.paid_out) { 
+        if (!item.paid_out) {
             if (item.income) {
                 acc.qntd_receitas_pendentes++;
                 acc.receitas_pendentes += item.amount;
