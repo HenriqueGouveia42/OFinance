@@ -1,0 +1,50 @@
+[
+    {
+        "id": 1,
+        "bank": "Itau",
+        "bank_logo": "src/assets/images/itaulogo.png",
+        "brand": "Hipercard",
+        "brand_logo": "src/assets/images/hipercardlogo.png",
+
+        "limit": 12000,
+        "expired": 250,
+        "closed": 300,
+        "open": 500,
+        "future": 800,
+
+        "closing_date": 10,
+        "due_date": 20
+    },
+    {
+        "id": 2,
+        "bank": "Bradesco",
+        "bank_logo": "src/assets/images/bradescologo.png",
+        "brand": "Visa",
+        "brand_logo": "src/assets/images/visalogo.png",
+        
+        "limit": 5000,
+        "expired": 200,
+        "closed": 275,
+        "open": 420,
+        "future": 500,
+
+        "closing_date": 10,
+        "due_date": 20
+    },
+    {
+        "id": 3,
+        "bank": "Santander",
+        "bank_logo": "src/assets/images/santanderlogo.png",
+        "brand": "Mastercard",
+        "brand_logo": "src/assets/images/mastercardlogo.png",
+
+        "limit": 9500,
+        "expired": 450,
+        "closed": 456,
+        "open": 126,
+        "future": 2000,
+
+        "closing_date": 10,
+        "due_date": 20
+    }
+]
