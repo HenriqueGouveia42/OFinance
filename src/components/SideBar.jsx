@@ -17,7 +17,7 @@ const SideBarIcon = ({icon, name}) =>{
 const SideBar = () =>{
     
     return(
-        <div className="fixed top-16 left-0 z-10 flex flex-col left-0 h-screen min-w-36  bg-primary text-secondary shadow-lg pl-9">
+        <div className="fixed top-16 z-10 flex flex-col left-0 h-screen min-w-36  bg-primary text-secondary shadow-lg pl-9">
             <div className="items-center space-y-7">
                 <SideBarIcon icon={<CiCirclePlus size="30"/>} name={"Novo"}/>
                 <SideBarIcon icon={<BsCashCoin size="30"/>} name={"Contas"}/>
