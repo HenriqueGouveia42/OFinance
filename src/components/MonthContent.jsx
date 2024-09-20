@@ -3,11 +3,11 @@ import { FaArrowTrendUp } from "react-icons/fa6";
 import { FaArrowTrendDown } from "react-icons/fa6";
 import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi"; 
-import transactions from "../assets/transactions.json"
-import Notifications from "./Notifications"
 import { useContext } from 'react';
 import { EyeContext } from "../Contexts/EyeContext";
+import transactions from "../assets/transactions.json"
 
+import Notifications from "./Notifications"
 
 const MonthContent = () => {
     var receita_total = 0;
