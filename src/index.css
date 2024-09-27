@@ -52,6 +52,6 @@
         @apply rounded-md flex bg-slate-300 items-center p-3 m-1 hover:cursor-pointer hover:bg-slate-400
     }
     .day-icon{
-        @apply flex justify-center w-11 h-1/4 bg-green-500 rounded-xl hover:bg-green-700 text-xs font-serif text-white text-center p-1 ml-1 mr-1
+        @apply flex justify-center text-xs rounded-2xl text-white hover:bg-green-700 font-serif text-center p-1 mr-1
     }
 }
