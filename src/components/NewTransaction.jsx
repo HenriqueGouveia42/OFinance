@@ -1,6 +1,6 @@
 import { FaArrowCircleLeft } from "react-icons/fa";
 import Numpad from "./Numpad.jsx";
-import TransactionDetails from "./TransactionDetails.jsx";
+import TransactionDetails from "./TransactionDetails.jsx"
 import { useState } from "react";
 
 const NewTransaction = ({type}) => {

@@ -1,38 +1,26 @@
-<div className="grid grid-cols-1 gap-2 justify-items-center">
-    <div className="transaction-detail-line text-sm">
-        <DetailLine 
-            icon={<GiConfirmed size={20} />}
-            content={received ? 'Recebido' : 'Não recebido'} 
-            action={<Toggle onClick={handleReceivedButtonClick} state={received} />}
-        />
-        <hr />
-    </div>
+import Toggle from "./Toggle"
+import { useState } from "react";
 
-    <div className="transaction-detail-line">
-        <DetailLine
-            icon={<CiCalendarDate size={20} />}
-            content={
-                <div className="flex space-x-2">
-                    <button className="day-icon">Hoje</button>
-                    <button className="day-icon">Ontem</button>
-                    <button className="day-icon">Outros...</button>
-                </div>
-            }
-        />
-        <hr />
-    </div>
+const DetailLine = ({icon, content, action}) =>{
+    return(
+        <>
+            <div className="grid grid-cols-3 items-center rounded-md p-6 m-1 w-full">
+                <div className="text-left">{icon}</div>
+                <div className="text-center">{content}</div>
+                <div className="text-right">{action}</div>
+            </div>
+            <hr></hr>
+        </>
+        
+    )
+}
 
-    <div className="transaction-detail-line">
-        <DetailLine
-            icon={<FaPencilAlt size={20} />}
-            content={
-                <div className="flex">
-                    <input type="text" className="max-w-xl" placeholder="Descrição" />
-                </div>
-            }
-            action={'a'}
-        />
-        <hr />
-    </div>
+const TransactionDetails = () =>{
 
-</div>
+    return(
+        <div className="w-full h-full">
+            <DetailLine icon="icon" content={"content"} action={<Toggle/>}/>
+        </div>
+    )
+}
+export default TransactionDetails
