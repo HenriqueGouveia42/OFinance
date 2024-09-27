@@ -55,4 +55,7 @@
         @apply rounded-md p-6 m-1 w-full
         
     }
+    .day-icon{
+        @apply flex justify-center w-11 h-1/4 bg-green-500 rounded-xl hover:bg-green-700 text-xs font-serif text-white text-center p-1 ml-1 mr-1
+    }
 }

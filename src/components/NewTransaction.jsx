@@ -9,12 +9,13 @@ const NewTransaction = ({type}) => {
     const handleVisibleClick = () =>{
         setVisible(prevValue => !prevValue)
     }
+
     return(
         <>
-            <div className= "flex flex-col min-w-[15rem] max-w-[30rem] min-h-[32rem] max-h-[64rem]">
+            <div className= "flex flex-col w-[20rem]">
                 <div className={`flex flex-col w-full h-1/5 ${type === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                         <div className="flex items-center">
-                            <buttom className="p-3 rounded-3xl hover:cursor-pointer"><FaArrowCircleLeft color="white" size="25"/></buttom>
+                            <button className="p-3 rounded-3xl hover:cursor-pointer"><FaArrowCircleLeft color="white" size="25"/></button>
                             <h1 className="font-medium text-white">Nova Receita</h1>
                         </div>
                     <div className="flex items-center">

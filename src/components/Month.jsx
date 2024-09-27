@@ -11,7 +11,7 @@ const Month = () =>{
                 <h2><IoIosArrowDown size={20} className="ml-4 bg-white rounded-2xl
                 hover:bg-green-600 hover:text-white hover:rounded-xl hover:cursos-pointer"/></h2>
             </div>
-            <div className=" bg-white rounded-3xl p-8 lg:min-w-[32rem] sm:min-w-[16rem] justify-items-center">
+            <div className=" bg-white rounded-3xl p-4 min-w-[10rem]">
                     <MonthContent />
             </div>
         </div>

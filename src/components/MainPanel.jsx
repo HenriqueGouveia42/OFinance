@@ -6,8 +6,8 @@ import NewTransaction from "./NewTransaction.jsx";
 const MainPanel = () =>{
     return(
         <>
-            <div className="flex flex-col mt-16 ml-36 overflow-auto w-screen h-screen bg-gray-500 p-8">
-                <div className="custom-md:flex-row custom-md:space-x-6 custom-md:space-y-0">
+            <div className="flex flex-col mt-16 ml-36 overflow-auto w-screen h-screen bg-gray-500 p-8 items-center">
+                <div className="columns-7xl">
                     <Month />
                     <NewTransaction type="revenue"/>
                 </div> 

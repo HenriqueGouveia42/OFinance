@@ -1,57 +1,38 @@
-import { GiConfirmed } from "react-icons/gi";
-import { useState } from "react";
-import Toggle from "./Toggle";
+<div className="grid grid-cols-1 gap-2 justify-items-center">
+    <div className="transaction-detail-line text-sm">
+        <DetailLine 
+            icon={<GiConfirmed size={20} />}
+            content={received ? 'Recebido' : 'Não recebido'} 
+            action={<Toggle onClick={handleReceivedButtonClick} state={received} />}
+        />
+        <hr />
+    </div>
 
-const DetailLine = ({icon, content, action}) =>{
-    return(
-        <div className="flex justify-between items-center mb-1">
-            {icon}
-            <div className="flex justify-start items-center">
-                {content}
-            </div>
-            {action}
-        </div>
-    )
-}
+    <div className="transaction-detail-line">
+        <DetailLine
+            icon={<CiCalendarDate size={20} />}
+            content={
+                <div className="flex space-x-2">
+                    <button className="day-icon">Hoje</button>
+                    <button className="day-icon">Ontem</button>
+                    <button className="day-icon">Outros...</button>
+                </div>
+            }
+        />
+        <hr />
+    </div>
 
-const TransactionDetails = () =>{
+    <div className="transaction-detail-line">
+        <DetailLine
+            icon={<FaPencilAlt size={20} />}
+            content={
+                <div className="flex">
+                    <input type="text" className="max-w-xl" placeholder="Descrição" />
+                </div>
+            }
+            action={'a'}
+        />
+        <hr />
+    </div>
 
-    const [received, setReceived] = useState(false);
-    const handleReceivedButtonClick = () =>{
-        setReceived(prevState => !prevState)
-    }
-
-    return(
-        <div className="grid grid-cols-1 gap-2 justify-items-center">
-            <h1 className="transaction-detail-line">
-                <DetailLine 
-                    icon={<GiConfirmed size={20}/>} 
-                    content={
-                        received ? 'Recebido' : "Nao recebido"
-                    } 
-                    action={
-                        <Toggle onClick={() => handleReceivedButtonClick()} state={received}/>
-                    }>
-                </DetailLine>
-                <hr></hr>
-            </h1>
-            <h1 className="transaction-detail-line">
-                <hr></hr>
-            </h1>
-            <h1 className="transaction-detail-line">
-                <hr></hr>
-            </h1>
-            <h1 className="transaction-detail-line">
-                <button></button>
-                <hr></hr>
-            </h1>
-            <h1 className="transaction-detail-line">
-                <hr></hr>
-            </h1>
-            <h1 className="transaction-detail-line">
-                <hr></hr>
-            </h1>
-        </div>
-    )
-}
-export default TransactionDetails
+</div>
