@@ -61,7 +61,7 @@ const TransactionDetails = () => {
     }
 
     return (
-        <div className="grid grid-cols-1 gap-y-2 w-full h-full">
+        <div className="grid grid-cols-1 gap-y-2 w-full h-96 overflow-y-auto">
             <DetailLine 
                 icon={<FaRegCheckCircle size={20} />} 
                 content={received ?  <div className="text-xs">Recebido</div>: <div className="text-xs">Não recebido</div>} 
@@ -112,7 +112,7 @@ const TransactionDetails = () => {
                     <label>Anexo</label>
                 }
                 action={<IoIosArrowForward size={20}/>}/>
-            <button className="bg-slate-400 p-1 rounded-3xl m-2" onClick={handleMoreClick}>{
+            <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={handleMoreClick}>{
                 more ? <label>Menos detalhes</label> : <label>Mais detalhes</label>
             }</button>
             {more ? 
