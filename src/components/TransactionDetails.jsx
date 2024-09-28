@@ -1,5 +1,7 @@
-import { useState } from "react";
 import Toggle from "./Toggle";
+
+import { useState } from "react";
+
 
 import { FaRegCheckCircle } from "react-icons/fa";
 import { CiCalendarDate } from "react-icons/ci";
@@ -11,11 +13,6 @@ import { FaPaperclip } from "react-icons/fa6";
 import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
-
-import "react-datepicker/dist/react-datepicker.css";
-
-
-
 
 const DetailLine = ({ icon, content, action }) => {
     return (
@@ -31,43 +28,41 @@ const DetailLine = ({ icon, content, action }) => {
 };
 
 
-
-
-
 const TransactionDetails = () => {
-    const [received, setReceived] = useState(false);
-    const toggleReceived = () => {
-        setReceived((prev) => !prev);
-    };
 
+    //Controle do estado do dia selecionado:
     const [selectedPayDay, setSelectedPayDay] = useState(null);
     const handlePayDayClick = (day) => {
         setSelectedPayDay(day);
     };
 
-    const [more, setMore] = useState(false);
-    const handleMoreClick = () =>{
-        setMore(prev => !prev)
-    }
-
-    const [fixed, setFixed] = useState(false);
-    const handleFixedClick = () =>{
-        setFixed(prev => !prev)
-    }
-
-    const [repeat, setRepeat] = useState(false);
-    const handleRepeatClick = () =>{
-        setRepeat(prev => !prev)
-    }
+    //Objeto que guarda os estados booleanos inseridos pelo usuários, como "Recebido", "Mais - Exibir mais detalhes do formulário", "Fixo, "Repete"...
+    //Os estados booleanos deste componente react serão todos acessado por meio deste objeto
+    const [settings, setSettings] = useState({
+        received: true,
+        more: false,
+        fixed: false,
+        repeat: false,
+    })
     
-    const [startDate, setStartDate] = useState(new Date());
+    
+    //Função que chama o setSettings e atualiza o valor atual para o valor lógico oposto - !
+
+    //...prev é DESESTRUTURACAO => Pega todas as propriedades do objeto prev e copia isso para um novo objeto
+        //Exemplo:
+            //const prev = { received: true, more: false };
+            //const newObj = { ...prev }; 
+            // newObj agora é { received: true, more: false } (cópia de prev)
+    const toggleSettings = (key) => {
+        setSettings(prev => ({...prev, [key]: !prev[key]}))
+    }
 
     return (
         <div className="grid grid-cols-1 gap-y-2 w-full h-96 overflow-y-auto">
             <DetailLine 
                 icon={<FaRegCheckCircle size={20} />} 
-                content={received ?  <div className="text-xs">Recebido</div>: <div className="text-xs">Não recebido</div>} 
-                action={<Toggle toggleReceived={toggleReceived} state={received} />} 
+                content={settings.received ?  <div className="text-xs">Recebido</div>: <div className="text-xs">Não recebido</div>} 
+                action={<Toggle toggleReceived={()=>toggleSettings('received')} state={settings.received} />} 
             />
             <DetailLine
                 icon={<CiCalendarDate size={20}/>                }
@@ -75,14 +70,13 @@ const TransactionDetails = () => {
                     <div className="flex items-center space-x-2">
                         <button className={`day-icon ${selectedPayDay === 'hoje' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('hoje')}>Hoje</button>
                         <button className={`day-icon ${selectedPayDay === 'ontem' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('ontem')}>Ontem</button>
-                        <button className={`day-icon ${selectedPayDay === 'outros' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label
-                            onClick={() => handlePayDayClick('outros') }>Outros</button>
+                        <button className={`day-icon ${selectedPayDay === 'outros' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('outros') }>Outros</button>
                             {selectedPayDay=='outros' &&
-                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                                <>CALENDARIO</>
                             }
                     </div> 
                 }
-                action={''}
+                action={''}s
             />
             <DetailLine
                 icon={
@@ -118,44 +112,42 @@ const TransactionDetails = () => {
                     <label>Anexo</label>
                 }
                 action={<IoIosArrowForward size={20}/>}/>
-            <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={handleMoreClick}>{
-                more ? <label>Menos detalhes</label> : <label>Mais detalhes</label>
-            }</button>
-            {more ? 
+            {settings.more ?
                 <>
+                    <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>toggleSettings('more')}><label>Menos Detalhes</label></button>
                     <DetailLine
                         icon={<MdOutlinePushPin size={20}/>}
                         content={<label>Receita fixa</label>}
-                        action={<Toggle toggleReceived={handleFixedClick} state={fixed} />}
+                        action={<Toggle toggleReceived={()=>toggleSettings('fixed')} state={settings.fixed} />}
                     />
                     <DetailLine
                         icon={<FaRepeat size={20}/>}
                         content={<label>Repetir</label>}
-                        action={<Toggle toggleReceived={handleRepeatClick} state={repeat} />}
+                        action={<Toggle toggleReceived={()=>toggleSettings('repeat')} state={settings.repeat} />}
                     />
-                    {repeat && 
+                    {settings.repeat && 
                         <DetailLine
                             icon={''}
-                            content={
-                                <ul className="flex flex-col border border-black border-1">
-                                    <li className="recurrency-type"><button>Todos os dias</button></li>
-                                    <li className="recurrency-type"><button>Semanal</button></li>
-                                    <li className="recurrency-type"><button>Mensal no(a) primeiro(a) dia</button></li>
-                                    <li className="recurrency-type"><button>Anual em (dia)</button></li>
-                                    <li className="recurrency-type"><button>Todos os dias da semana</button></li>
-                                </ul>
-                            }
-                            action={''} />
+                                content={
+                                    <ul className="flex flex-col border border-black border-1">
+                                        <li className="recurrency-type"><button>Todos os dias</button></li>
+                                        <li className="recurrency-type"><button>Semanal</button></li>
+                                        <li className="recurrency-type"><button>Mensal no(a) primeiro(a) dia</button></li>
+                                        <li className="recurrency-type"><button>Anual em (dia)</button></li>
+                                        <li className="recurrency-type"><button>Todos os dias da semana</button></li>
+                                        </ul>
+                                    }
+                                    action={''}
+                        />
                     }
                     <DetailLine
                         icon={<CiBellOn size={20}/>}
                         content={<label>Lembrar-me</label>}
                         action={<IoIosArrowForward size={20}/>}
-                    />
-                </>
+                    /> 
+                </> 
                 :
-                    <></>
-            }
+                <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>toggleSettings('more')}><label>Mais detalhes</label></button>}
         </div>
     );
 };
