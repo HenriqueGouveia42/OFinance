@@ -55,6 +55,6 @@
         @apply flex justify-center text-xs rounded-2xl text-white hover:bg-green-700 font-serif text-center p-1 mr-1
     }
     .recurrency-type{
-        @apply flex items-start p-1 w-full  hover:bg-blue-300 font-serif
+        @apply flex items-start p-1 w-full  hover:bg-blue-500 font-serif
     }
 }
