@@ -33,16 +33,15 @@ const DetailLine = ({ icon, content, action }) => {
 
 
 
-
 const TransactionDetails = () => {
     const [received, setReceived] = useState(false);
     const toggleReceived = () => {
         setReceived((prev) => !prev);
     };
 
-    const [selectedDay, setSelectedDay] = useState(null);
-    const handleDayClick = (day) => {
-        setSelectedDay(day);
+    const [selectedPayDay, setSelectedPayDay] = useState(null);
+    const handlePayDayClick = (day) => {
+        setSelectedPayDay(day);
     };
 
     const [more, setMore] = useState(false);
@@ -59,6 +58,7 @@ const TransactionDetails = () => {
     const handleRepeatClick = () =>{
         setRepeat(prev => !prev)
     }
+    
 
     return (
         <div className="grid grid-cols-1 gap-y-2 w-full h-96 overflow-y-auto">
@@ -71,10 +71,13 @@ const TransactionDetails = () => {
                 icon={<CiCalendarDate size={20}/>                }
                 content={
                     <div className="flex items-center space-x-2">
-                        <button className={`day-icon ${selectedDay === 'hoje' ? 'bg-green-900' : 'bg-green-600 '}`} onClick={() => handleDayClick('hoje')}>Hoje</button>
-                        <button className={`day-icon ${selectedDay === 'ontem' ? 'bg-green-900' : 'bg-green-600 '}`} onClick={() => handleDayClick('ontem')}>Ontem</button>
-                        <button className={`day-icon ${selectedDay === 'outros' ? 'bg-green-900' : 'bg-green-600 '}`} onClick={() => handleDayClick('outros')}>Outros</button>
-                    </div>
+                        <button className={`day-icon ${selectedPayDay === 'hoje' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('hoje')}>Hoje</button>
+                        <button className={`day-icon ${selectedPayDay === 'ontem' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('ontem')}>Ontem</button>
+                        <button className={`day-icon ${selectedPayDay === 'outros' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label
+                            onClick={() => handlePayDayClick('outros') }>Outros</button>
+                            {selectedPayDay=='outros' &&
+                                <></>}
+                    </div> 
                 }
                 action={''}
             />
@@ -127,6 +130,20 @@ const TransactionDetails = () => {
                         content={<label>Repetir</label>}
                         action={<Toggle toggleReceived={handleRepeatClick} state={repeat} />}
                     />
+                    {repeat && 
+                        <DetailLine
+                            icon={''}
+                            content={
+                                <ul className="flex flex-col border border-black border-1">
+                                    <li className="recurrency-type"><button>Todos os dias</button></li>
+                                    <li className="recurrency-type"><button>Semanal</button></li>
+                                    <li className="recurrency-type"><button>Mensal no(a) primeiro(a) dia</button></li>
+                                    <li className="recurrency-type"><button>Anual em (dia)</button></li>
+                                    <li className="recurrency-type"><button>Todos os dias da semana</button></li>
+                                </ul>
+                            }
+                            action={''} />
+                    }
                     <DetailLine
                         icon={<CiBellOn size={20}/>}
                         content={<label>Lembrar-me</label>}
