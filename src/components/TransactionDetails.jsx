@@ -12,6 +12,7 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
 
+import "react-datepicker/dist/react-datepicker.css";
 
 
 
@@ -59,6 +60,7 @@ const TransactionDetails = () => {
         setRepeat(prev => !prev)
     }
     
+    const [startDate, setStartDate] = useState(new Date());
 
     return (
         <div className="grid grid-cols-1 gap-y-2 w-full h-96 overflow-y-auto">
@@ -76,7 +78,8 @@ const TransactionDetails = () => {
                         <button className={`day-icon ${selectedPayDay === 'outros' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label
                             onClick={() => handlePayDayClick('outros') }>Outros</button>
                             {selectedPayDay=='outros' &&
-                                <></>}
+                                <DatePicker selected={startDate} onChange={(date) => setStartDate(date)} />
+                            }
                     </div> 
                 }
                 action={''}
