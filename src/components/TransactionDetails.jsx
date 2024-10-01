@@ -13,6 +13,7 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
 
+//Componente react que representa uma linha do componente pai TransactionDetails
 const DetailLine = ({ icon, content, action }) => {
     return (
         <>
@@ -27,7 +28,7 @@ const DetailLine = ({ icon, content, action }) => {
 };
 
 
-const TransactionDetails = () => {
+const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransaction}) => {
 
     //Controle do estado do dia selecionado:
     const [selectedPayDay, setSelectedPayDay] = useState(null);
@@ -59,7 +60,8 @@ const TransactionDetails = () => {
     const toggleSettings = (key) => {
         setSettings(prev => ({...prev, [key]: !prev[key]}))
     }
-
+    
+    //Opções de frequência para transações que se repetem
     const frequencyOptions = [
         { value: 'daily', label: 'Todos os dias' },
         { value: 'weekly', label: 'Semanal' },
@@ -68,8 +70,11 @@ const TransactionDetails = () => {
         { value: 'every_day_of_week', label: 'Todos os dias da semana' },
     ];
 
+    //Opções de categorias para registro de transação
+
+
     return (
-        <div className="grid grid-cols-1 gap-y-2 w-full h-96 overflow-y-auto">
+        <div className="grid grid-cols-1 gap-y-2 h-96 overflow-y-auto">
             <DetailLine 
                 icon={<FaRegCheckCircle size={20} />} 
                 content={settings.received ?  <div className="text-xs">Recebido</div>: <div className="text-xs">Não recebido</div>} 
@@ -123,48 +128,49 @@ const TransactionDetails = () => {
                     <label>Anexo</label>
                 }
                 action={<IoIosArrowForward size={20}/>}/>
-            {settings.more ?
-                <>
-                    <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>toggleSettings('more')}><label>Menos Detalhes</label></button>
-                    <DetailLine
-                        icon={<MdOutlinePushPin size={20}/>}
-                        content={<label>Receita fixa</label>}
-                        action={<Toggle toggleReceived={()=>toggleSettings('fixed')} state={settings.fixed} />}
-                    />
-                    <DetailLine
-                        icon={<FaRepeat size={20}/>}
-                        content={<label>Repetir</label>}
-                        action={<Toggle toggleReceived={()=>toggleSettings('repeat')} state={settings.repeat} />}
-                    />
-                    {settings.repeat &&
-                        <>
-                            <DetailLine
-                                icon={''}
-                                    content={
-                                        <ul className="flex flex-col border border-black border-1">
-                                            {
-                                                frequencyOptions.map((option)=>(
-                                                    <li key={frequencyOptions.value}>
-                                                        <button className={`recurrency-type ${typeRepeat === option.value ? 'bg-blue-500' : ''}`} onClick={() => handleTypeRepeatClick(option.value)}> {option.label} </button>
-                                                    </li>
-                                                ))
+                {settings.more ?
+                    <>
+                        <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>toggleSettings('more')}><label>Menos Detalhes</label></button>
+                        <DetailLine
+                            icon={<MdOutlinePushPin size={20}/>}
+                            content={<label>Receita fixa</label>}
+                            action={<Toggle toggleReceived={()=>toggleSettings('fixed')} state={settings.fixed} />}
+                        />
+                        <DetailLine
+                            icon={<FaRepeat size={20}/>}
+                            content={<label>Repetir</label>}
+                            action={<Toggle toggleReceived={()=>toggleSettings('repeat')} state={settings.repeat} />}
+                        />
+                        {settings.repeat &&
+                            <>
+                                <DetailLine
+                                    icon={''}
+                                        content={
+                                            <ul className="flex flex-col border border-black border-1">
+                                                {
+                                                    frequencyOptions.map((option)=>(
+                                                        <li key={frequencyOptions.value}>
+                                                            <button className={`recurrency-type ${typeRepeat === option.value ? 'bg-blue-500' : ''}`} onClick={() => handleTypeRepeatClick(option.value)}> {option.label} </button>
+                                                        </li>
+                                                    ))
+                                                }
+                                            </ul>
                                             }
-                                        </ul>
-                                        }
-                                        action={''}
-                            />
-                            <h1>{typeRepeat}</h1>
-                        </> 
-                        
-                    }
-                    <DetailLine
-                        icon={<CiBellOn size={20}/>}
-                        content={<label>Lembrar-me</label>}
-                        action={<IoIosArrowForward size={20}/>}
-                    /> 
-                </> 
+                                            action={''}
+                                />
+                                <h1>{typeRepeat}</h1>
+                            </> 
+                            
+                        }
+                        <DetailLine
+                            icon={<CiBellOn size={20}/>}
+                            content={<label>Lembrar-me</label>}
+                            action={<IoIosArrowForward size={20}/>}
+                        /> 
+                    </> 
                 :
                 <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>toggleSettings('more')}><label>Mais detalhes</label></button>}
+            <button className="w-full bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>saveAndContinue()}>Salvar e continuar</button>
         </div>
     );
 };
