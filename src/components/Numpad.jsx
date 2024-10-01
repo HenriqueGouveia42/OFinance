@@ -1,12 +1,12 @@
 import { CgBackspace } from "react-icons/cg";
 import { useState } from "react";
 
-const Numpad = () =>{
+const Numpad = ({valueReceivedFromNumPadtoNewTransaction}) =>{
 
     const [inputValue, setInputValue] = useState('');
-    const [deleteValue, setDeleteValue] = useState('');
-    const [sendValue, setSendValue] = useState('');
+    
 
+    
     const handleInputButtonClick = (digit) =>{
         setInputValue(prevValue => prevValue + digit);
     }
@@ -14,7 +14,9 @@ const Numpad = () =>{
         setInputValue(prevValue => prevValue.slice(0,-1));
     }
     const handleSendButtonClick = () =>{
-        //Enviar para outro lugar
+        //Sobe o valor para o componente pai NewTransaction via "Lifting-up-state"
+        valueReceivedFromNumPadtoNewTransaction(inputValue)
+        //Zera o valor de Input
         setInputValue('0');
     }
     const handlePointInputButtonClick = ()=>{
