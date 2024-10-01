@@ -1,7 +1,7 @@
 import { CgBackspace } from "react-icons/cg";
 import { useState } from "react";
 
-const Numpad = ({valueReceivedFromNumPadtoNewTransaction}) =>{
+const Numpad = ({valueReceivedFromNumPadtoNewTransaction, detailsOrNumpad}) =>{
 
     const [inputValue, setInputValue] = useState('');
     
@@ -18,6 +18,7 @@ const Numpad = ({valueReceivedFromNumPadtoNewTransaction}) =>{
         valueReceivedFromNumPadtoNewTransaction(inputValue)
         //Zera o valor de Input
         setInputValue('0');
+        detailsOrNumpad();
     }
     const handlePointInputButtonClick = ()=>{
         setInputValue(prevValue =>{
