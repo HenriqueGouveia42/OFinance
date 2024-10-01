@@ -3,20 +3,29 @@ import Numpad from "./Numpad.jsx";
 import TransactionDetails from "./TransactionDetails.jsx"
 import { useState } from "react";
 
+//visible, setVisible, handleVisibleClick:
+//Define qual componente filho será renderizadoo: Numpad ou TransactionDetailss
+
+//value, SetValue, valueReceivedFromNumPadtoNewTransaction
+//Função que chama setValue será passada como prop ao componente filho Numpad para receber dele o dado 'value' via lifting-up-state
+
+//details, setDetails, detailsReceivedFromTransactionDetailstoNewTransaction
+//Função que chama setDetails será passada como prop ao componente filho Transaction Details para receber dele o objeto 'details' via lifting-up-state
+
+//createUnifiedTransactionObject:
+//Unifica em um único objeto o dado 'value', vindo do componente filho Numpad, e o objeto 'details', vindo do componente filho TransactionDetails, ambos via lifting-up-state
 const NewTransaction = ({type}) => {
 
-    const [visible, setVisible] = useState(false);
-    const handleVisibleClick = () =>{
-        setVisible(prevValue => !prevValue)
+    const [detailsOrNumpad, setDetailsOrNumpad] = useState(false);
+    const handleDetailsOrNumpadClick = () =>{
+        setDetailsOrNumpad(prevValue => !prevValue)
     }
 
-    //Armazena o valor de input do usuario que vem do componente filho Numpad através de "lifting-up-state"
     const [value, setValue] = useState('0');
     const valueReceivedFromNumPadtoNewTransaction = (value) => {
-        setValue(value)
+        setValue(value);
     }
 
-    //Armazena os detalhes da transação do usuário que virão do componente filho TransactionDetails através de "lifting-up-state"
     const [details, setDetails] = useState({
         received: false,
         more: false,
@@ -31,7 +40,15 @@ const NewTransaction = ({type}) => {
             ...newDetails   // Sobrescreve ou adiciona as propriedades vindas de newDetails
         })
     }
-    
+
+    const createUnifiedTransactionObject = () => {
+        const unifiedObject = {
+            value: parseFloat(value), //Converte para float o valor recebido via lifting-up-state de Numpad
+            details : details //Inclui todos os detalhes
+        }
+        return unifiedObject
+    }
+
     return(
         <>
             <div className= "flex flex-col w-[20rem]">
@@ -43,9 +60,9 @@ const NewTransaction = ({type}) => {
                         </div>
                     <div className="flex items-center">
                             <div className="flex flex-col">
-                                <h1 className="text-xs text-white">{type == 'revenue' ? 'Valor da receita' : 'Valro da despesa'}</h1>
+                                <h1 className="text-xs text-white">{type == 'revenue' ? 'Valor da receita' : 'Valor da despesa'}</h1>
                                 <button className="text-lg text-white hover:cursor-pointer hover:bg-green-600"
-                                onClick={()=>handleVisibleClick()}>
+                                onClick={()=>handleDetailsOrNumpadClick()}>
                                 {((parseFloat(value))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}</button>
                             </div>
                     </div>
@@ -53,12 +70,11 @@ const NewTransaction = ({type}) => {
                 {/* Parte inferior do NewTransaction, que pode renderizar o NumPad, para inserir um novo valor, ou o TransactionDetails*/}
                 <div className="flex flex-col w-full h-4/5 bg-white">
                     {/* Renderiza o componente Numpad */}
-                    {visible && <Numpad  valueReceivedFromNumPadtoNewTransaction={valueReceivedFromNumPadtoNewTransaction}/> }
+                    {detailsOrNumpad && <Numpad  valueReceivedFromNumPadtoNewTransaction={valueReceivedFromNumPadtoNewTransaction} detailsOrNumpad={handleDetailsOrNumpadClick}/> }
                     {/* Renderiza o componente TransactionDetails */}
-                    {!visible && <TransactionDetails detailsReceivedFromTransactionDetailstoNewTransaction={''}/>}
+                    {!detailsOrNumpad && <TransactionDetails detailsReceivedFromTransactionDetailstoNewTransaction={detailsReceivedFromTransactionDetailstoNewTransaction}/>}
                 </div>
             </div>
-            {console.log(value)}
         </>
     )
 }
