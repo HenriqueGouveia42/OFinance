@@ -13,13 +13,6 @@ const Numpad = ({valueReceivedFromNumPadtoNewTransaction, detailsOrNumpad}) =>{
     const handleDeleteButtonClick = () =>{
         setInputValue(prevValue => prevValue.slice(0,-1));
     }
-    const handleSendButtonClick = () =>{
-        //Sobe o valor para o componente pai NewTransaction via "Lifting-up-state"
-        valueReceivedFromNumPadtoNewTransaction(inputValue)
-        //Zera o valor de Input
-        setInputValue('0');
-        detailsOrNumpad();
-    }
     const handlePointInputButtonClick = ()=>{
         setInputValue(prevValue =>{
             if (prevValue.includes('.')){
@@ -27,6 +20,12 @@ const Numpad = ({valueReceivedFromNumPadtoNewTransaction, detailsOrNumpad}) =>{
             }
             return prevValue+'.';
         })
+    }
+    const handleSendButtonClick = () =>{
+        //Sobe o valor para o componente pai NewTransaction via "Lifting-up-state"
+        valueReceivedFromNumPadtoNewTransaction(inputValue)
+        //Altera o valor da variável detailOrNumpad do componente pai "NewTransaction" via "lifting-up-state"
+        detailsOrNumpad();
     }
     return(
         <div className="flex flex-col items-center justify-center bg-gray-200 h-full p-2">
@@ -38,11 +37,11 @@ const Numpad = ({valueReceivedFromNumPadtoNewTransaction, detailsOrNumpad}) =>{
             <div className="grid grid-cols-3 gap-2 justify-items-center">
                 {
                     ['7','8','9','4','5','6','1','2','3'].map(digit => (
-                        <buttom key={digit}
+                        <button key={digit}
                         className="numpad-button" 
                         onClick={() => handleInputButtonClick(digit)}>
                             {digit}
-                        </buttom>
+                        </button>
                     ))
                 }
                 <button className="numpad-button col-span-1" onClick={()=>handleInputButtonClick('0')}>0</button>
