@@ -23,16 +23,14 @@ const NewTransaction = ({type}) => {
 
     const [value, setValue] = useState('0');
     const valueReceivedFromNumPadtoNewTransaction = (value) => {
-        setValue(value);
+        setValue(parseFloat(value));
     }
 
     const [details, setDetails] = useState({
-        received: false,
-        more: false,
-        fixed: false,
-        repeat: false,
-        typeRepeat: "",
-        selectedPayDay: null
+        settings:{},
+        selectedPayDay: null,
+        description: '',
+        typeRepeat: '',
     });
     const detailsReceivedFromTransactionDetailstoNewTransaction = (newDetails) => {
         setDetails({
@@ -41,16 +39,15 @@ const NewTransaction = ({type}) => {
         })
     }
 
-    const createUnifiedTransactionObject = () => {
-        const unifiedObject = {
-            value: parseFloat(value), //Converte para float o valor recebido via lifting-up-state de Numpad
-            details : details //Inclui todos os detalhes
-        }
-        return unifiedObject
-    }
+    //Objeto que une a variavel value que veio do Numpad e os detalhes que vieram do TransactionDetails
+    const unified = {
+        value: value,
+        ...details
+    };
 
     return(
         <>
+            {(type == 'revenue' || type =='expense') &&
             <div className= "flex flex-col w-[20rem]">
                 {/* Parte superior do NewTransaction, que pode ser verde, se for uma nova receita, ou vermelho, se for uma nova despesa*/}
                 <div className={`flex flex-col w-full h-1/5 ${type === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
@@ -70,11 +67,12 @@ const NewTransaction = ({type}) => {
                 {/* Parte inferior do NewTransaction, que pode renderizar o NumPad, para inserir um novo valor, ou o TransactionDetails*/}
                 <div className="flex flex-col w-full h-4/5 bg-white">
                     {/* Renderiza o componente Numpad */}
-                    {detailsOrNumpad && <Numpad  valueReceivedFromNumPadtoNewTransaction={valueReceivedFromNumPadtoNewTransaction} detailsOrNumpad={handleDetailsOrNumpadClick}/> }
+                    {!detailsOrNumpad && <Numpad  valueReceivedFromNumPadtoNewTransaction={valueReceivedFromNumPadtoNewTransaction} detailsOrNumpad={handleDetailsOrNumpadClick}/> }
                     {/* Renderiza o componente TransactionDetails */}
-                    {!detailsOrNumpad && <TransactionDetails detailsReceivedFromTransactionDetailstoNewTransaction={detailsReceivedFromTransactionDetailstoNewTransaction}/>}
+                    {detailsOrNumpad && <TransactionDetails detailsReceivedFromTransactionDetailstoNewTransaction={detailsReceivedFromTransactionDetailstoNewTransaction}/>}
                 </div>
-            </div>
+            </div>}
+            {alert(JSON.stringify(unified))}
         </>
     )
 }
