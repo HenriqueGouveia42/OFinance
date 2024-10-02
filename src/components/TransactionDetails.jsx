@@ -13,7 +13,28 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
 
+//DetailLine:
 //Componente react que representa uma linha do componente pai TransactionDetails
+
+ //selectedPayDay, setSelectedPayDay, handlePayDayClick:
+//Controle do estado do dia selecionado
+
+//typeRepeat, setTypeRepeat, handleTypeRepeatClick:
+//Controle do estado da frequencia de repeticao
+
+//settings, setSettings, toggleSettings:
+    //Objeto que guarda os estados booleanos inseridos pelo usuários, como "Recebido", "Mais - Exibir mais detalhes do formulário", "Fixo, "Repete"...
+    //Os estados booleanos deste componente react serão todos acessado por meio deste objeto
+    //toggleSettings é a função que chama o setSettings e atualiza o valor atual para o valor lógico oposto - !
+    //...prev é DESESTRUTURACAO => Pega todas as propriedades do objeto prev e copia isso para um novo objeto
+        //Exemplo:
+            //const prev = { received: true, more: false };
+            //const newObj = { ...prev }; 
+            // newObj agora é { received: true, more: false } (cópia de prev)
+
+//frequencyOptions:
+    //Opções de frequência para transações que se repetem
+
 const DetailLine = ({ icon, content, action }) => {
     return (
         <>
@@ -27,30 +48,18 @@ const DetailLine = ({ icon, content, action }) => {
     );
 };
 
-
 const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransaction}) => {
 
-    //Controle do estado do dia selecionado:
     const [selectedPayDay, setSelectedPayDay] = useState(null);
     const handlePayDayClick = (day) => {
         setSelectedPayDay(day);
     };
 
-    //Controle do estado da frequencia de repeticao
     const [typeRepeat, setTypeRepeat] = useState(null);
     const handleTypeRepeatClick = (key) => {
         setTypeRepeat(key)
     }
 
-    //Objeto que guarda os estados booleanos inseridos pelo usuários, como "Recebido", "Mais - Exibir mais detalhes do formulário", "Fixo, "Repete"...
-    //Os estados booleanos deste componente react serão todos acessado por meio deste objeto
-
-    //Função que chama o setSettings e atualiza o valor atual para o valor lógico oposto - !
-    //...prev é DESESTRUTURACAO => Pega todas as propriedades do objeto prev e copia isso para um novo objeto
-        //Exemplo:
-            //const prev = { received: true, more: false };
-            //const newObj = { ...prev }; 
-            // newObj agora é { received: true, more: false } (cópia de prev)
     const [settings, setSettings] = useState({
         received: true,
         more: false,
@@ -61,7 +70,6 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
         setSettings(prev => ({...prev, [key]: !prev[key]}))
     }
     
-    //Opções de frequência para transações que se repetem
     const frequencyOptions = [
         { value: 'daily', label: 'Todos os dias' },
         { value: 'weekly', label: 'Semanal' },
@@ -70,8 +78,16 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
         { value: 'every_day_of_week', label: 'Todos os dias da semana' },
     ];
 
-    //Opções de categorias para registro de transação
+    const createUnifiedObject = {
+        selectedPayDay: selectedPayDay,
+        typeRepeat: typeRepeat,
+        settings : settings,
+        frequencyOptions: frequencyOptions,
+    }
 
+    const saveAndContinue = () =>{
+        detailsReceivedFromTransactionDetailstoNewTransaction(createUnifiedDataObject)
+    }
 
     return (
         <div className="grid grid-cols-1 gap-y-2 h-96 overflow-y-auto">
@@ -145,18 +161,18 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
                             <>
                                 <DetailLine
                                     icon={''}
-                                        content={
-                                            <ul className="flex flex-col border border-black border-1">
-                                                {
-                                                    frequencyOptions.map((option)=>(
-                                                        <li key={frequencyOptions.value}>
-                                                            <button className={`recurrency-type ${typeRepeat === option.value ? 'bg-blue-500' : ''}`} onClick={() => handleTypeRepeatClick(option.value)}> {option.label} </button>
-                                                        </li>
-                                                    ))
+                                    content={
+                                        <ul className="flex flex-col border border-black border-1">
+                                            {
+                                                frequencyOptions.map((option)=>(
+                                                    <li key={option.value}>
+                                                        <button className={`recurrency-type ${typeRepeat === option.value ? 'bg-blue-500' : ''}`} onClick={() => handleTypeRepeatClick(option.value)}> {option.label} </button>
+                                                    </li>
+                                                ))
                                                 }
                                             </ul>
                                             }
-                                            action={''}
+                                    action={''}
                                 />
                                 <h1>{typeRepeat}</h1>
                             </> 
