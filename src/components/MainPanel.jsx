@@ -9,7 +9,7 @@ const MainPanel = () =>{
             <div className="flex flex-col mt-16 ml-36 overflow-auto w-screen h-screen bg-gray-500 p-8 items-center">
                 <div className="columns-7xl">
                     <Month />
-                    <NewTransaction type="revenue"/>
+                    <NewTransaction type='revenue'/>
                 </div> 
             </div>
         </>
