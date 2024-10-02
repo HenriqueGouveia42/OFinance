@@ -55,6 +55,12 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
         setSelectedPayDay(day);
     };
 
+    const [description, setDescription] = useState('');
+    const handleInputDescription = ({descriptionInputValue}) =>{
+        setDescription(descriptionInputValue);
+    }
+    
+
     const [typeRepeat, setTypeRepeat] = useState(null);
     const handleTypeRepeatClick = (key) => {
         setTypeRepeat(key)
@@ -78,15 +84,14 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
         { value: 'every_day_of_week', label: 'Todos os dias da semana' },
     ];
 
-    const createUnifiedObject = {
-        selectedPayDay: selectedPayDay,
-        typeRepeat: typeRepeat,
+    const unifiedObject = {
         settings : settings,
-        frequencyOptions: frequencyOptions,
+        selectedPayDay: selectedPayDay,
+        description: description,
+        typeRepeat: typeRepeat,
     }
-
-    const saveAndContinue = () =>{
-        detailsReceivedFromTransactionDetailstoNewTransaction(createUnifiedDataObject)
+    const sendUnifiedObject = () =>{
+        detailsReceivedFromTransactionDetailstoNewTransaction(unifiedObject)
     }
 
     return (
@@ -94,7 +99,7 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
             <DetailLine 
                 icon={<FaRegCheckCircle size={20} />} 
                 content={settings.received ?  <div className="text-xs">Recebido</div>: <div className="text-xs">Não recebido</div>} 
-                action={<Toggle toggleReceived={()=>toggleSettings('received')} state={settings.received} />} 
+                action={<Toggle toggleReceived={()=>toggleSettings('received')} state={settings.received} />}
             />
             <DetailLine
                 icon={<CiCalendarDate size={20}/>                }
@@ -108,14 +113,18 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
                             }
                     </div> 
                 }
-                action={''}s
+                action={''}
             />
             <DetailLine
                 icon={
                     <button className="hover: cursor-pointer hover:bg-gray-400 hover: rounded-full"><MdKeyboardVoice size={20} /></button>
                 }
                 content={
-                    <input type="text" placeholder="Descrição"></input>
+                    <input type="text"
+                    placeholder="Descrição" 
+                    value={description}
+                    onChange={(e) => setDescription(e.target.value)}>
+                    </input>
                 }
                 action={''} />
             <DetailLine
@@ -186,7 +195,13 @@ const TransactionDetails = ({detailsReceivedFromTransactionDetailstoNewTransacti
                     </> 
                 :
                 <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>toggleSettings('more')}><label>Mais detalhes</label></button>}
-            <button className="w-full bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" onClick={()=>saveAndContinue()}>Salvar e continuar</button>
+            <button className="w-full bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600"
+            onClick={()=>{
+                sendUnifiedObject();
+                //console.log(JSON.unifiedObject)
+                }}>
+                Salvar e continuar
+                </button>
         </div>
     );
 };
