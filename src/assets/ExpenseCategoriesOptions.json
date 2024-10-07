@@ -1,0 +1,19 @@
+[
+    {
+        "value": "food",
+        "label": "Alimentacao"
+    },
+    {
+        "value": "health",
+        "label": "Saude"
+    },
+    {
+        "value": "fun",
+        "label": "Lazer"
+    },
+    {
+        "value": "relationshio",
+        "label": "Relacionamento"
+    }
+]
+

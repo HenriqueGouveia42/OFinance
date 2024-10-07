@@ -1,0 +1,14 @@
+[
+    {
+        "value": "cash",
+        "label": "Espécie"
+    },
+    {
+        "value": "nubank",
+        "label": "Nubank"
+    },
+    {
+        "value": "picpay",
+        "label": "Picpay"
+    }
+]
