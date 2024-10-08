@@ -1,5 +1,6 @@
 import { useState } from "react";
 
+//handleTypeRepeatClick é a função de lifting-up-state que atualiza um estado no componente pai
 const RenderRepeatTypes = ({handleTypeRepeatClick}) =>{
     //Frequencias de repeticao, se houver repeticao
     const frequencyOptions =
@@ -16,6 +17,7 @@ const RenderRepeatTypes = ({handleTypeRepeatClick}) =>{
         setIsListVisible(prev => !prev)
     }
 
+    //Atualiza um estado interno ao componente
     const [typeRepeat, setTypeRepeat] = useState(null);
     const handleSetTypeRepeat = (value) =>{
         setTypeRepeat(value)
