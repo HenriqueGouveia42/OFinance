@@ -18,11 +18,18 @@ import DetailLine from "./DetailLine";
 import RenderCategories from "./RenderCategories";
 import RenderRepeatTypes from "./RenderRepeatTypes";
 import RenderAccounts from "./RenderAccounts";
+import Datepicker from "react-tailwindcss-datepicker"
 
 import { useState } from "react";
 import { useEffect } from "react";
 
 const NewTransaction = ({type}) => {
+
+    //Armazena a data inserida pelo usuário da data de recebimento da transação
+    const [dateValue, setDateValue] = useState({ 
+        startDate: null, 
+        endDate: null
+    });
 
     //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai via lifting-up-state, ou os detalhes da transação
     const [isNumpadVisible, setIsNumpadVisible] = useState(true);
@@ -130,7 +137,7 @@ const NewTransaction = ({type}) => {
                                 </div>
                         </div>
                     </div>
-                    {/* Parte inferior do NewTransaction, que pode renderizar o NumPad, para inserir um novo valor, ou o TransactionDetails, para inserir os deatlhes da transação*/}
+                    {/* Parte inferior do NewTransaction, que pode renderizar o componente filho NumPad, para inserir um novo valor, ou os demais elementos para inserir os deatalhes da transação*/}
                     <div className="flex flex-col w-full h-4/5 bg-white">
                         {/* Renderiza o componente filho Numpad */}
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
@@ -142,20 +149,29 @@ const NewTransaction = ({type}) => {
                                     content={details.received ?  <div className="text-xs">{type === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
                                     action={<Toggle toggleReceived={()=>toggleDetails('received')} state={details.received} />}
                                 />
-                                <DetailLine
-                                    icon={<CiCalendarDate size={20}/>                }
-                                    content={
-                                    <div className="flex items-center space-x-2">
-                                        <button className={`day-icon ${selectedPayDay === 'hoje' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('hoje')}>Hoje</button>
-                                        <button className={`day-icon ${selectedPayDay === 'ontem' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('ontem')}>Ontem</button>
-                                        <button className={`day-icon ${selectedPayDay === 'outros' ? 'bg-green-900 hover:shadow-2xl' : 'bg-green-600 '}`} aria-label onClick={() => handlePayDayClick('outros') }>Outros</button>
-                                            {selectedPayDay=='outros' &&
-                                                <>CALENDARIO</>
+                                <Datepicker
+                                    inputClassName="w-full rounded-md font-normal bg-[1E293B] placeholder:text-white-100 text-white dark:placeholder:text-blue-100"
+                                    displayFormat="DD/MM/YYYY"
+                                    popoverDirection="down"
+                                    placeholder="Insira a data"
+                                    showShortcuts={true}
+                                    configs={
+                                        {
+                                            shortcuts:{
+                                                customToday:{
+                                                    text:"Hoje",
+                                                    period: {
+                                                        start: new Date(),
+                                                        end: new Date()
+                                                    }
+                                                }
                                             }
-                                    </div> 
+                                        }
                                     }
-                                    action={''}
-                                />
+                                    asSingle={true} 
+                                    value={dateValue} 
+                                    onChange={newValue => setDateValue(newValue)}
+                                /> 
                                 <DetailLine
                                     icon={
                                         <button className="hover: cursor-pointer hover:bg-gray-400 hover: rounded-full"><MdKeyboardVoice size={20} /></button>
