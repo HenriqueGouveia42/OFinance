@@ -20,11 +20,11 @@ const RenderCategories = ({type, handleCategorySelected}) =>{
     return(
         <>
             {isListVisible ?
-                <ul className="border border-black border-1">
+                <ul className="border border-black border-1 rounded-2xl">
                     {categories.map((category) =>
                         <li key={category.value}>
                             <button
-                            className="category-icon"
+                            className="account-icon"
                             onClick={() =>
                             {
                                 handleCategorySelected(category.value);

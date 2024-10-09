@@ -58,9 +58,9 @@
         @apply flex items-start p-1 w-full  hover:bg-blue-500 font-serif
     }
     .category-icon{
-        @apply flex items-start p-1 w-full  hover:bg-blue-500 font-serif
+        @apply flex items-start p-1 w-full rounded-3xl  hover:bg-blue-500 font-serif
     }
     .account-icon{
-        @apply flex items-start p-1 w-full  hover:bg-blue-500 font-serif
+        @apply flex items-start p-1 w-full rounded-3xl  hover:bg-blue-500 font-serif
     }
 }

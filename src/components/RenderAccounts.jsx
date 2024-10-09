@@ -20,7 +20,7 @@ const RenderAccounts = ({handleAccountSelected}) =>{
     return(
         <>
             {isListVisible ?
-                <ul className="border border-black border-1">
+                <ul className="border border-black border-1  rounded-2xl">
                     {accounts.map((acc) =>
                         <li key={acc.value}>
                             <button
