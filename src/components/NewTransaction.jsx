@@ -150,27 +150,13 @@ const NewTransaction = ({type}) => {
                                     action={<Toggle toggleReceived={()=>toggleDetails('received')} state={details.received} />}
                                 />
                                 <Datepicker
-                                    inputClassName="w-full rounded-md font-normal bg-[1E293B] placeholder:text-white-100 text-white dark:placeholder:text-blue-100"
+                                    asSingle={true}
+                                    value={dateValue} 
+                                    onChange={newValue => setDateValue(newValue)}
+                                    useRange={false}
                                     displayFormat="DD/MM/YYYY"
                                     popoverDirection="down"
                                     placeholder="Insira a data"
-                                    showShortcuts={true}
-                                    configs={
-                                        {
-                                            shortcuts:{
-                                                customToday:{
-                                                    text:"Hoje",
-                                                    period: {
-                                                        start: new Date(),
-                                                        end: new Date()
-                                                    }
-                                                }
-                                            }
-                                        }
-                                    }
-                                    asSingle={true} 
-                                    value={dateValue} 
-                                    onChange={newValue => setDateValue(newValue)}
                                 /> 
                                 <DetailLine
                                     icon={
