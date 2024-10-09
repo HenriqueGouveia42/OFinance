@@ -1,5 +1,5 @@
 import { CgBackspace } from "react-icons/cg";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 
 const Numpad = ({transactionValueInput}) =>{
@@ -24,6 +24,34 @@ const Numpad = ({transactionValueInput}) =>{
     const resetInputNumber = () =>{
         setInputNumber(prevValue => '')
     }
+
+    // Captura a entrada do teclado
+    const handleKeyDown = (event) => {
+        const { key } = event;
+
+        if (key >= '0' && key <= '9') {
+            // Se for número, adiciona ao input
+            handleDigitButtonClick(key);
+        } else if (key === '.' && !inputNumber.includes('.')) {
+            // Se for ponto, e ainda não tiver ponto, adiciona
+            handlePointInputButtonClick();
+        } else if (key === 'Backspace') {
+            // Se for backspace, apaga o último dígito
+            handleDeleteDigitButtonClick();
+        } else if (key === 'Enter') {
+            // Se for Enter, confirma o valor
+            inputNumber === '' ? transactionValueInput('0') : transactionValueInput(inputNumber);
+            resetInputNumber();
+            
+        }
+    };
+
+    useEffect(() =>{
+        window.addEventListener('keydown', handleKeyDown);
+        return () =>{
+            window.removeEventListener('keydown', handleKeyDown);
+        }
+    }, [inputNumber]); //o useEffect depende do inputnumber
 
     return(
         <div className="flex flex-col items-center justify-center bg-gray-200 h-full p-2">
