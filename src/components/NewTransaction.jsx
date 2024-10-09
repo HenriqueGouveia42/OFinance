@@ -121,17 +121,27 @@ const NewTransaction = ({type}) => {
                             <div className="flex items-center">
                                 {/*Se o componente filho Numpad estiver renderizado, 'isNumpadVisible' tem seu valor lógico invertido, fazendo 'Numpad' sumir e os detalhes da transação serem renderizados em seu lugar*/}
                                 <button className="p-3"><FaArrowCircleLeft color="white" size="25"
-                                    onClick={()=>isNumpadVisible && handleIsNumpadVisible()}
+                                    onClick={
+                                        (e)=>{
+                                            if (isNumpadVisible) handleIsNumpadVisible();
+                                            e.target.blur(); //Remove o foco do botão após o clique, essencial para evitara comportamentos inesperados
+                                        }
+                                    }
                                 />
-                                </button> {/* Botão só leva a renderizar o TransactionDetails se o componente Numpad estiver rendizado*/}
+                                </button> {/* Botão só leva a renderizar o TransactionDetails se o componente Numpad estiver renderizado*/}
                                 <h1 className="font-medium text-white">{type == 'revenue' ? 'Nova receita' : 'Nova despesa'}</h1>
                             </div>
                         <div className="flex items-center">
                                 <div className="flex flex-col">
                                     <h1 className="text-xs text-white m-1">{type == 'revenue' ? 'Valor da receita' : 'Valor da despesa'}</h1>
                                     <button className="flex items-center p-1 m-1 text-lg text-white hover:cursor-pointer hover:bg-green-600 rounded-2xl"
-                                            onClick={()=>!isNumpadVisible && handleIsNumpadVisible()}> {/* Botão só leva a renderizar o componente Numpad e o TransactionDetails estiver rendizado*/}
-                                            {((parseFloat(transactionValue))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}
+                                            onClick={(e)=>
+                                            {   
+                                                if (!isNumpadVisible) handleIsNumpadVisible();
+                                                e.target.blur(); //Remove o foco do botão após o clique, essencial para evitara comportamentos inesperados
+                                            }
+                                            }> {/* Botão só leva a renderizar o componente Numpad e o TransactionDetails estiver rendizado*/}
+                                                {((parseFloat(transactionValue))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}
                                             <FaRegEdit className="ml-4" size={20}/>
                                     </button>
                                 </div>
@@ -142,7 +152,7 @@ const NewTransaction = ({type}) => {
                         {/* Renderiza o componente filho Numpad */}
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
                         {/* Input dos detalhes da transação*/}
-                        {!isNumpadVisible && 
+                        {!isNumpadVisible &&
                             <div className="flex flex-col h-80 justify-between overflow-y-scroll">
                                 <DetailLine 
                                     icon={<FaRegCheckCircle size={20} />}
@@ -151,13 +161,15 @@ const NewTransaction = ({type}) => {
                                 />
                                 <Datepicker
                                     asSingle={true}
-                                    value={dateValue} 
-                                    onChange={newValue => setDateValue(newValue)}
+                                    readOnly={true}
                                     useRange={false}
+                                    value={dateValue} 
                                     displayFormat="DD/MM/YYYY"
                                     popoverDirection="down"
                                     placeholder="Insira a data"
-                                /> 
+                                    onChange={newValue => setDateValue(newValue)}
+                                />
+                                {console.log(dateValue)}
                                 <DetailLine
                                     icon={
                                         <button className="hover: cursor-pointer hover:bg-gray-400 hover: rounded-full"><MdKeyboardVoice size={20} /></button>
@@ -238,6 +250,7 @@ const NewTransaction = ({type}) => {
                     </div>
                 </div>
             }
+            {console.log(dateValue)}
         </>
     )
 }
