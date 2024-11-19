@@ -38,16 +38,15 @@ const NewTransaction = ({type}) => {
     }
 
     // handleTransactionValueInput é passada como prop ao componente filho Numpad a fim de receber o valor inserido pelo usuário via lifting-up-state
-    const [transactionValue, setTransactionValue] = useState('0');
     const handleTransactionValueInput = (value) => {
-        setTransactionValue(value);
+        updateDetails('value', value)
         handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
     }
 
     //Objeto javascript que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
         type: type,
-        value: transactionValue,
+        value: '',
         received: true,
         selectedPayDay: null,
         description: '',
@@ -60,43 +59,33 @@ const NewTransaction = ({type}) => {
         typeRepeat: '',
         remindMe: false
     });
-
-    //Inverte o valor lógico de atributos booleanos como 'received', 'more', 'fixed'...
-    const toggleDetails = (key) => {
-        setDetails(prev => ({...prev, [key]: !prev[key]}))
+    //Atualiza os valores do objeto details  
+    const updateDetails = (field, value) => {
+        setDetails((prevDetails) => ({
+            ...prevDetails,
+            [field]: value,
+        }));
     }
-
-    //Define o dia de pagamento. 'Hoje', 'Ontem' ou 'Outros' 
-    const [selectedPayDay, setSelectedPayDay] = useState(null);
-    const handlePayDayClick = (day) => {
-        setSelectedPayDay(day);
-    };
-
+    
     //Armazena a descrição de texto
     const [description, setDescription] = useState('');
     const handleInputDescription = (e) =>{
-        const value = e.target.value;
-        setDetails(prev => ({
-            ...prev,
-            description: value
-        }));
+        updateDetails('description', e.target.value)
     }
 
     //Armazena e altera a categoria selecionada pelo usuário, seja de receita ou de despesa. 
     //'categorySelected', 'setCategory' e 'handleCategorySelected' serão passados como props ao componente filho
     //RenderCategories, que será responsável por renderizar a lista de categorias cadastradas pelo usuário e alterar 'categorySelected'
     //via lifting-up-state
-    const [categorySelected, setCategorySelected] = useState(null);
     const handleCategorySelected = (value) =>{
-        setCategorySelected(value);
+        updateDetails('category', value);
     }
 
     //Armazena e altera a conta selecionada pelo usuário, seja de receita ou de despesa.
     //'accountSelected', 'setAccount' e 'handleAccountSelected' serão passados como props ao componente filho
     //RenderAccounts, que será responsável por renderizar a lista de contas cadastradas pelo usuário e alterar 'accountSelected'
-    const [accountSelected, setAccountSelected] = useState(null);
     const handleAccountSelected = (value) =>{
-        setAccountSelected(value)
+        updateDetails('account', value)
     }
 
     const [typeRepeat, setTypeRepeat] = useState(null);
@@ -113,6 +102,7 @@ const NewTransaction = ({type}) => {
 
     return(
         <>
+            
             {(type === 'revenue' || type ==='expense') &&
                 <div className= "flex flex-col w-[20rem]">
                     {/*Parte superior do NewTransaction, que pode ser verde, se for uma nova receita, ou vermelho, se for uma nova despesa*/}
@@ -131,6 +121,7 @@ const NewTransaction = ({type}) => {
                                 </button> {/* Botão só leva a renderizar o TransactionDetails se o componente Numpad estiver renderizado*/}
                                 <h1 className="font-medium text-white">{type == 'revenue' ? 'Nova receita' : 'Nova despesa'}</h1>
                             </div>
+                        
                         <div className="flex items-center">
                                 <div className="flex flex-col">
                                     <h1 className="text-xs text-white m-1">{type == 'revenue' ? 'Valor da receita' : 'Valor da despesa'}</h1>
@@ -141,9 +132,10 @@ const NewTransaction = ({type}) => {
                                                 e.target.blur(); //Remove o foco do botão após o clique, essencial para evitara comportamentos inesperados
                                             }
                                             }> {/* Botão só leva a renderizar o componente Numpad e o TransactionDetails estiver rendizado*/}
-                                                {((parseFloat(transactionValue))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}
-                                            <FaRegEdit className="ml-4" size={20}/>
+                                                {((parseFloat(details.value))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}
+                                                <FaRegEdit className="ml-4" size={20}/>
                                     </button>
+                                    {console.log(details)}
                                 </div>
                         </div>
                     </div>
@@ -157,7 +149,7 @@ const NewTransaction = ({type}) => {
                                 <DetailLine 
                                     icon={<FaRegCheckCircle size={20} />}
                                     content={details.received ?  <div className="text-xs">{type === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
-                                    action={<Toggle toggleReceived={()=>toggleDetails('received')} state={details.received} />}
+                                    action={<Toggle toggleReceived={()=>updateDetails('received', !details.received)} state={details.received} />}
                                 />
                                 <Datepicker
                                     asSingle={true}
@@ -169,7 +161,6 @@ const NewTransaction = ({type}) => {
                                     placeholder="Insira a data"
                                     onChange={newValue => setDateValue(newValue)}
                                 />
-                                {console.log(dateValue)}
                                 <DetailLine
                                     icon={
                                         <button className="hover: cursor-pointer hover:bg-gray-400 hover: rounded-full"><MdKeyboardVoice size={20} /></button>
@@ -210,7 +201,7 @@ const NewTransaction = ({type}) => {
                                     action={<IoIosArrowForward size={20}/>}
                                 />
                                 <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" 
-                                    onClick={()=>toggleDetails('more')}>
+                                    onClick={()=>updateDetails('more', !details.more)}>
                                     <span>{details.more ? 'Menos Detalhes': 'Mais Detalhes'}</span>
                                 </button>
                                 {details.more &&
@@ -218,12 +209,12 @@ const NewTransaction = ({type}) => {
                                         <DetailLine
                                             icon={<MdOutlinePushPin size={20}/>}
                                             content={<span>{type==='revenue' ? 'Receita ' : 'Despesa '}fixa</span>}
-                                            action={<Toggle toggleReceived={()=>toggleDetails('fixed')} state={details.fixed} />}
+                                            action={<Toggle toggleReceived={()=>updateDetails('fixed', !details.fixed)} state={details.fixed} />}
                                         />
                                         <DetailLine
                                             icon={<FaRepeat size={20}/>}
                                             content={<span>Repetir</span>}
-                                            action={<Toggle toggleReceived={()=>toggleDetails('repeat')} state={details.repeat} />}
+                                            action={<Toggle toggleReceived={()=>updateDetails('repeat', !details.repeat)} state={details.repeat} />}
                                         />
                                         {details.repeat &&
                                             <DetailLine

@@ -6,6 +6,7 @@ import { useState } from "react";
 
 //Renderiza as categorias cadastradas de receitas ou despesas
 const RenderCategories = ({type, handleCategorySelected}) =>{
+    //categories recebe a lista de receitas ou depesas, dependendo do tipo argumento type
     const categories = type === 'revenue' ? RevenueCategories : ExpenseCategories;
 
     const [isListVisible, setIsListVisible] = useState(true)
