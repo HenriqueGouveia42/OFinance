@@ -2,7 +2,6 @@
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
-import { CiCalendarDate } from "react-icons/ci";
 import { FaTag } from "react-icons/fa6";
 import { IoIosArrowForward } from "react-icons/io";
 import { MdKeyboardVoice } from "react-icons/md";
@@ -19,29 +18,11 @@ import RenderCategories from "./RenderCategories";
 import RenderRepeatTypes from "./RenderRepeatTypes";
 import RenderAccounts from "./RenderAccounts";
 import Datepicker from "react-tailwindcss-datepicker"
-
+//Hooks
 import { useState } from "react";
 import { useEffect } from "react";
 
 const NewTransaction = ({type}) => {
-
-    //Armazena a data inserida pelo usuário da data de recebimento da transação
-    const [dateValue, setDateValue] = useState({ 
-        startDate: null, 
-        endDate: null
-    });
-
-    //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai via lifting-up-state, ou os detalhes da transação
-    const [isNumpadVisible, setIsNumpadVisible] = useState(true);
-    const handleIsNumpadVisible = () =>{
-        setIsNumpadVisible(prevValue => !prevValue)
-    }
-
-    // handleTransactionValueInput é passada como prop ao componente filho Numpad a fim de receber o valor inserido pelo usuário via lifting-up-state
-    const handleTransactionValueInput = (value) => {
-        updateDetails('value', value)
-        handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
-    }
 
     //Objeto javascript que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
@@ -49,7 +30,7 @@ const NewTransaction = ({type}) => {
         currency: 'BRL',
         status: null,
         type: type,
-        value: '',
+        value: 0,
         received: true,
         selectedPayDay: null,
         description: '',
@@ -62,12 +43,6 @@ const NewTransaction = ({type}) => {
         typeRepeat: '',
         remindMe: false
     });
-
-    const[more, setMore] = useState(false); //Estado especifico para UI
-    const showMoreDetails = () =>{
-        setMore((prev) => !prev);
-    }
-
     //Atualiza os valores do objeto details  
     const updateDetails = (field, value) => {
         setDetails((prevDetails) => ({
@@ -75,37 +50,40 @@ const NewTransaction = ({type}) => {
             [field]: value,
         }));
     }
+    //Função generica que atualiza os campos de details, tenham os inputs a propriedade 'target', ou sseja, sendo eventos, ou sejam valores diretos.
+    //Extrai o valor do campo se o parâmetro for um evento. (value = eventOrValue.target.value)
+    //Usa o valor diretamente se for passado como argumento. (value = eventOrValue)
+    const updateDetailsField = (field) => (eventOrValue) =>{
+        const value = (eventOrValue?.target) ? eventOrValue.target.value : eventOrValue
+        updateDetails(field, value);
+    }
+    const handleInputDate = updateDetailsField('selectedPayDay');
+    const handleInputDescription = updateDetailsField('description');
+    const handleCategorySelected = updateDetailsField('category');
+    const handleAccountSelected = updateDetailsField('account');
+    const handleTypeRepeatClick = updateDetailsField('typeRepeat')
+
+    //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai via lifting-up-state, ou os detalhes da transação
+    const [isNumpadVisible, setIsNumpadVisible] = useState(true);
+    const handleIsNumpadVisible = () =>{
+        setIsNumpadVisible(prevValue => !prevValue)
+    }
+    const handleTransactionValueInput = (value) => {
+        updateDetails('value', value)
+        handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
+    }
+
     
-    //Armazena a descrição de texto
-    const [description, setDescription] = useState('');
-    const handleInputDescription = (e) =>{
-        updateDetails('description', e.target.value)
-    }
 
-    //Armazena e altera a categoria selecionada pelo usuário, seja de receita ou de despesa. 
-    //'categorySelected', 'setCategory' e 'handleCategorySelected' serão passados como props ao componente filho
-    //RenderCategories, que será responsável por renderizar a lista de categorias cadastradas pelo usuário e alterar 'categorySelected'
-    //via lifting-up-state
-    const handleCategorySelected = (value) =>{
-        updateDetails('category', value);
-    }
-
-    //Armazena e altera a conta selecionada pelo usuário, seja de receita ou de despesa.
-    //'accountSelected', 'setAccount' e 'handleAccountSelected' serão passados como props ao componente filho
-    //RenderAccounts, que será responsável por renderizar a lista de contas cadastradas pelo usuário e alterar 'accountSelected'
-    const handleAccountSelected = (value) =>{
-        updateDetails('account', value)
-    }
-
-    const [typeRepeat, setTypeRepeat] = useState(null);
-    const handleTypeRepeatClick = (key) => {
-        updateDetails('typeRepeat', key)
+    const[more, setMore] = useState(false); //Estado especifico para UI
+    const showMoreDetails = () =>{
+        setMore((prev) => !prev);
     }
 
     //useEffect que esvazia 'typeRepeat' quando 'repeat' for false
     useEffect(() => {
         if (!details.repeat) {
-            setTypeRepeat('');
+            updateDetails('typeRepeat', '')
         }
     }, [details.repeat]);
 
@@ -140,8 +118,10 @@ const NewTransaction = ({type}) => {
                                                 if (!isNumpadVisible) handleIsNumpadVisible();
                                                 e.target.blur(); //Remove o foco do botão após o clique, essencial para evitara comportamentos inesperados
                                             }
-                                            }> {/* Botão só leva a renderizar o componente Numpad e o TransactionDetails estiver rendizado*/}
-                                                {((parseFloat(details.value))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})}
+                                            }> 
+                                                {
+                                                    ((parseFloat(details.value))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})
+                                                }
                                                 <FaRegEdit className="ml-4" size={20}/>
                                     </button>
                                     {console.log(details)}
@@ -161,14 +141,15 @@ const NewTransaction = ({type}) => {
                                     action={<Toggle toggleReceived={()=>updateDetails('received', !details.received)} state={details.received} />}
                                 />
                                 <Datepicker
+                                    showShortcuts={true}
                                     asSingle={true}
                                     readOnly={true}
                                     useRange={false}
-                                    value={dateValue} 
+                                    value={details.selectedPayDay} 
                                     displayFormat="DD/MM/YYYY"
                                     popoverDirection="down"
                                     placeholder="Insira a data"
-                                    onChange={newValue => setDateValue(newValue)}
+                                    onChange={newValue => handleInputDate(newValue)}
                                 />
                                 <DetailLine
                                     icon={
@@ -244,6 +225,7 @@ const NewTransaction = ({type}) => {
                                     </>
                                 
                                 }
+                                <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600">Enviar</button>
                             </div>
                             
                         }
