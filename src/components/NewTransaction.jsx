@@ -45,20 +45,29 @@ const NewTransaction = ({type}) => {
 
     //Objeto javascript que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
+        user_id: null,
+        currency: 'BRL',
+        status: null,
         type: type,
         value: '',
         received: true,
         selectedPayDay: null,
         description: '',
         category: '',
+        account_id: '',
         account: '',
         attachment: null,
-        more: false,
         fixed: false,
         repeat: false,
         typeRepeat: '',
         remindMe: false
     });
+
+    const[more, setMore] = useState(false); //Estado especifico para UI
+    const showMoreDetails = () =>{
+        setMore((prev) => !prev);
+    }
+
     //Atualiza os valores do objeto details  
     const updateDetails = (field, value) => {
         setDetails((prevDetails) => ({
@@ -201,10 +210,10 @@ const NewTransaction = ({type}) => {
                                     action={<IoIosArrowForward size={20}/>}
                                 />
                                 <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600" 
-                                    onClick={()=>updateDetails('more', !details.more)}>
-                                    <span>{details.more ? 'Menos Detalhes': 'Mais Detalhes'}</span>
+                                    onClick={()=>showMoreDetails()}>
+                                    <span>{more ? 'Menos Detalhes': 'Mais Detalhes'}</span>
                                 </button>
-                                {details.more &&
+                                {more &&
                                     <>
                                         <DetailLine
                                             icon={<MdOutlinePushPin size={20}/>}
