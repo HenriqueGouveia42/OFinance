@@ -1,13 +1,16 @@
 [
     {
+        "id": 1,
         "value": "prolabore",
         "label": "Pro-Labore"
     },
     {
+        "id": 2,
         "value": "interest",
         "label": "Agiotagem"
     },
     {
+        "id": 3,
         "value": "gift",
         "label": "Presente"
     }
