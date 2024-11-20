@@ -90,7 +90,7 @@ const NewTransaction = ({type}) => {
 
     const [typeRepeat, setTypeRepeat] = useState(null);
     const handleTypeRepeatClick = (key) => {
-        setTypeRepeat(key)
+        updateDetails('typeRepeat', key)
     }
 
     //useEffect que esvazia 'typeRepeat' quando 'repeat' for false
@@ -241,7 +241,6 @@ const NewTransaction = ({type}) => {
                     </div>
                 </div>
             }
-            {console.log(dateValue)}
         </>
     )
 }
