@@ -73,8 +73,6 @@ const NewTransaction = ({type}) => {
         handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
     }
 
-    
-
     const[more, setMore] = useState(false); //Estado especifico para UI
     const showMoreDetails = () =>{
         setMore((prev) => !prev);
@@ -88,13 +86,13 @@ const NewTransaction = ({type}) => {
     }, [details.repeat]);
 
     return(
-        <>
+        <> 
             
             {(type === 'revenue' || type ==='expense') &&
-                <div className= "flex flex-col w-[20rem]">
+                <div className= "flex flex-col w-[20rem] overflow-x-hidden">
                     {/*Parte superior do NewTransaction, que pode ser verde, se for uma nova receita, ou vermelho, se for uma nova despesa*/}
                     {/*Possui um botão para renderizar o componente filho Numpad*/}
-                    <div className={`flex flex-col w-full h-1/5 ${type === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
+                    <div className={`flex flex-col h-1/5 max-w-full ${type === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">
                                 {/*Se o componente filho Numpad estiver renderizado, 'isNumpadVisible' tem seu valor lógico invertido, fazendo 'Numpad' sumir e os detalhes da transação serem renderizados em seu lugar*/}
                                 <button className="p-3"><FaArrowCircleLeft color="white" size="25"
@@ -129,12 +127,12 @@ const NewTransaction = ({type}) => {
                         </div>
                     </div>
                     {/* Parte inferior do NewTransaction, que pode renderizar o componente filho NumPad, para inserir um novo valor, ou os demais elementos para inserir os deatalhes da transação*/}
-                    <div className="flex flex-col w-full h-4/5 bg-white">
+                    <div className="flex flex-col h-4/5 w-full bg-white">
                         {/* Renderiza o componente filho Numpad */}
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
                         {/* Input dos detalhes da transação*/}
                         {!isNumpadVisible &&
-                            <div className="flex flex-col h-80 justify-between overflow-y-scroll">
+                            <div className="flex flex-col h-80 justify-between overflow-y-scroll overflow-x-hidden">
                                 <DetailLine 
                                     icon={<FaRegCheckCircle size={20} />}
                                     content={details.received ?  <div className="text-xs">{type === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
