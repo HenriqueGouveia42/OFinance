@@ -16,8 +16,13 @@
     },
     {
         "id": 4,
-        "value": "relationshio",
+        "value": "relationship",
         "label": "Relacionamento"
+    },
+    {
+        "id": 5,
+        "value": "drinks",
+        "label": "Bebidas"
     }
 ]
 
