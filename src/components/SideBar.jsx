@@ -1,28 +1,66 @@
 import { BsCashCoin } from "react-icons/bs";
 import { HiCreditCard } from "react-icons/hi2";
 import { CiCirclePlus } from "react-icons/ci";
+import { useContext, useState } from "react";
+import { TransactionTypeContext } from "../contexts/TransactionTypeContext";
 
-const SideBarIcon = ({icon, name}) =>{
-    return(
-        <button className="icon ml-2">
-            <div className="flex items-center">
-                {icon}
-                <div className="text-white ml-5 break-words text-xs">
-                    {name}
-                </div>
-            </div>
-        </button>
-    )
-}
 const SideBar = () =>{
-    
+
+    const [newRevenueOrExpense, setNewRevenueOrExpense] = useState(false);
+    const toggleNewRevenueOrExpense = () =>{
+        setNewRevenueOrExpense((prevState) => !prevState);
+    }
+    const {transactionType, handleTransactionType} = useContext(TransactionTypeContext);
     return(
-        <div className="fixed top-16 z-10 flex flex-col left-0 h-screen min-w-36  bg-primary text-secondary shadow-lg pl-9">
-            <div className="items-center space-y-7">
-                <SideBarIcon icon={<CiCirclePlus size="30"/>} name={"Novo"}/>
-                <SideBarIcon icon={<BsCashCoin size="30"/>} name={"Contas"}/>
-                <SideBarIcon icon={<HiCreditCard size="30"/>} name={"Cartões"}/>
+        <div className="fixed top-16 z-10 flex flex-col left-0 h-screen max-w-64  bg-primary text-secondary shadow-lg p-2">
+            <div className="relative flex flex-col align-middle justify-center items-start space-y-8">
+                <button className="icon" onClick={toggleNewRevenueOrExpense}>
+                    <div className="flex items-center">
+                        <div>
+                            <CiCirclePlus size="30"/>
+                        </div>
+                        <div className="text-white ml-5 break-words text-xs">
+                            <p>Nova receita/despesa</p>
+                        </div>
+                    </div>
+                </button>
+                {newRevenueOrExpense &&
+                    <div className="absolute flex flex-col bottom-32 left-48 bg-white rounded-xl shadow-lg p-2 min-w-[10rem]">
+                        <button className="text-sm hover:bg-gray-200 rounded p-1" onClick={() => {
+                            handleTransactionType("revenue");
+                            toggleNewRevenueOrExpense();
+                            }}>Receita
+                        </button>
+                        <button className="text-sm hover:bg-gray-200 rounded p-1" onClick={() => {
+                            handleTransactionType("expense")
+                            toggleNewRevenueOrExpense();
+                            }}>Despesa
+                        </button>
+                            
+                    </div>
+                }
+                <button className="icon">
+                    <div className="flex items-center">
+                        <div>
+                            <BsCashCoin size="30"/>
+                        </div>
+                        <div className="text-white ml-5 break-words text-xs">
+                            <p>Contas</p>
+                        </div>
+                    </div>
+                </button>
+                <button className="icon">
+                    <div className="flex items-center">
+                        <div>
+                            <HiCreditCard size="30"/>
+                        </div>
+                        <div className="text-white ml-5 break-words text-xs">
+                            <p>Cartões de Crédito</p>
+                        </div>
+                    </div>
+                </button>
             </div>
+            
         </div>
     )
 }
