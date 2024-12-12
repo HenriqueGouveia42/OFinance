@@ -1,4 +1,3 @@
-import { BiNotification } from "react-icons/bi";
 import { FaArrowTrendUp } from "react-icons/fa6";
 import { FaArrowTrendDown } from "react-icons/fa6";
 import { FiEye } from "react-icons/fi";
