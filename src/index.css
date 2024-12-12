@@ -4,8 +4,8 @@
 
 @layer components{
     .icon{
-        @apply relative flex items-center justify-start
-            h-8 w-8 mt-5 mb-2 shadow-lg
+        @apply flex items-center align-middle w-full
+            p-2 shadow-lg
             bg-gray-800 text-orange-500
             rounded-3xl
             hover:bg-green-600 hover:text-white hover:rounded-xl hover:cursor-pointer
@@ -34,10 +34,10 @@
             bg-red-400 text-white
             rounded-3xl
             hover:bg-red-600 hover:text-white hover:rounded-xl hover:cursor-pointer;
-    }
+        }
     .credit-card-texts{
         @apply p-1 mb-4 rounded-lg shadow w-16 flex flex-col items-center justify-center font-bold text-xxs
-    }
+        }
     .eye-icon{
         @apply hover:bg-green-600 hover:text-white hover:rounded-xl hover:cursor-pointer
         transition-all duration-300 ease-linear;
