@@ -1,0 +1,72 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "mysql"
+  url      = env("DATABASE_URL")
+}
+
+model User{
+  id Int @id @default(autoincrement())
+  username String
+  email String
+  password String
+  transactions Transaction[] //Relacionamento 1:N com Transactions
+  accounts Account[] //Relacionamento 1:N com Account
+}
+
+//'enum' -> enumeraton. Tipo de dado especial que permite definir uma lista de valores constantes, muito utilizados para representar uma coleção de itens relacionados
+enum TransactionStatus {
+  pending
+  completed
+  failed
+}
+
+enum TransactionType {
+  income
+  expense
+}
+
+model Transaction{
+  id Int @id @default(autoincrement())
+
+  userId Int //Chave estrangeira para User
+  accountId Int //Chave estrangeira para Account
+  user User @relation(fields: [userId], references: [id]) //Relacionamento com User
+  account Account @relation(fields: [accountId], references: [id]) //Relacionamento com Account
+
+  currency String
+  status TransactionStatus?
+  type String
+  value Int
+  received Boolean
+  selectedPayDay DateTime?
+  description String
+  category String
+  attachment String?
+  fixed Boolean
+  repeat Boolean
+  typeRepeat String?
+  remindMe Boolean
+  createdAt DateTime @default(now())
+}
+
+model Account{
+  id Int @id @default(autoincrement())
+  name String
+  balance Int
+  ownerId Int //Chave estrangeira para User
+  owner User @relation(fields: [ownerId], references: [id]) //Relacionamento com user
+  transactions Transaction[] // Relacionamento 1:N com Transactions
+}
+
+
+
+
