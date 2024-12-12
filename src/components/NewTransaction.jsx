@@ -21,15 +21,21 @@ import Datepicker from "react-tailwindcss-datepicker"
 //Hooks
 import { useState } from "react";
 import { useEffect } from "react";
+import { useContext } from "react";
 
-const NewTransaction = ({type}) => {
+import { TransactionTypeContext } from "../contexts/TransactionTypeContext.jsx";
+
+const NewTransaction = () => {
+
+    // Acessando o contexto
+    const {transactionType} = useContext(TransactionTypeContext);
 
     //Objeto javascript que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
         user_id: null,
         currency: 'BRL',
         status: null,
-        type: type,
+        type: null,
         value: 0,
         received: true,
         selectedPayDay: null,
@@ -50,7 +56,7 @@ const NewTransaction = ({type}) => {
             [field]: value,
         }));
     }
-    //Função generica que atualiza os campos de details, tenham os inputs a propriedade 'target', ou sseja, sendo eventos, ou sejam valores diretos.
+    //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
     //Extrai o valor do campo se o parâmetro for um evento. (value = eventOrValue.target.value)
     //Usa o valor diretamente se for passado como argumento. (value = eventOrValue)
     const updateDetailsField = (field) => (eventOrValue) =>{
@@ -85,14 +91,11 @@ const NewTransaction = ({type}) => {
         }
     }, [details.repeat]);
 
+    
     return(
         <> 
-            
-            {(type === 'revenue' || type ==='expense') &&
                 <div className= "flex flex-col w-[20rem] overflow-x-hidden">
-                    {/*Parte superior do NewTransaction, que pode ser verde, se for uma nova receita, ou vermelho, se for uma nova despesa*/}
-                    {/*Possui um botão para renderizar o componente filho Numpad*/}
-                    <div className={`flex flex-col h-1/5 max-w-full ${type === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
+                    <div className={`flex flex-col h-1/5 max-w-full ${transactionType === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">
                                 {/*Se o componente filho Numpad estiver renderizado, 'isNumpadVisible' tem seu valor lógico invertido, fazendo 'Numpad' sumir e os detalhes da transação serem renderizados em seu lugar*/}
                                 <button className="p-3"><FaArrowCircleLeft color="white" size="25"
@@ -104,12 +107,12 @@ const NewTransaction = ({type}) => {
                                     }
                                 />
                                 </button> {/* Botão só leva a renderizar o TransactionDetails se o componente Numpad estiver renderizado*/}
-                                <h1 className="font-medium text-white">{type == 'revenue' ? 'Nova receita' : 'Nova despesa'}</h1>
+                                <h1 className="font-medium text-white">{transactionType == 'revenue' ? 'Nova receita' : 'Nova despesa'}</h1>
                             </div>
                         
                         <div className="flex items-center">
                                 <div className="flex flex-col">
-                                    <h1 className="text-xs text-white m-1">{type == 'revenue' ? 'Valor da receita' : 'Valor da despesa'}</h1>
+                                    <h1 className="text-xs text-white m-1">{transactionType == 'revenue' ? 'Valor da receita' : 'Valor da despesa'}</h1>
                                     <button className="flex items-center p-1 m-1 text-lg text-white hover:cursor-pointer hover:bg-green-600 rounded-2xl"
                                             onClick={(e)=>
                                             {   
@@ -122,20 +125,18 @@ const NewTransaction = ({type}) => {
                                                 }
                                                 <FaRegEdit className="ml-4" size={20}/>
                                     </button>
-                                    {console.log(details)}
                                 </div>
                         </div>
                     </div>
-                    {/* Parte inferior do NewTransaction, que pode renderizar o componente filho NumPad, para inserir um novo valor, ou os demais elementos para inserir os deatalhes da transação*/}
                     <div className="flex flex-col h-4/5 w-full bg-white">
-                        {/* Renderiza o componente filho Numpad */}
+                        
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
-                        {/* Input dos detalhes da transação*/}
+                        
                         {!isNumpadVisible &&
                             <div className="flex flex-col h-80 justify-between overflow-y-scroll overflow-x-hidden">
                                 <DetailLine 
                                     icon={<FaRegCheckCircle size={20} />}
-                                    content={details.received ?  <div className="text-xs">{type === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
+                                    content={details.received ?  <div className="text-xs">{transactionType === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
                                     action={<Toggle toggleReceived={()=>updateDetails('received', !details.received)} state={details.received} />}
                                 />
                                 <Datepicker
@@ -166,7 +167,7 @@ const NewTransaction = ({type}) => {
                                     icon={<FaTag size={20}/>}
                                     content={
                                         <RenderCategories
-                                        type={type}
+                                        type={transactionType}
                                         handleCategorySelected={handleCategorySelected}
                                         />                    
                                     }
@@ -196,7 +197,7 @@ const NewTransaction = ({type}) => {
                                     <>
                                         <DetailLine
                                             icon={<MdOutlinePushPin size={20}/>}
-                                            content={<span>{type==='revenue' ? 'Receita ' : 'Despesa '}fixa</span>}
+                                            content={<span>{transactionType==='revenue' ? 'Receita ' : 'Despesa '}fixa</span>}
                                             action={<Toggle toggleReceived={()=>updateDetails('fixed', !details.fixed)} state={details.fixed} />}
                                         />
                                         <DetailLine
@@ -221,7 +222,6 @@ const NewTransaction = ({type}) => {
                                             action={<IoIosArrowForward size={20}/>}
                                         /> 
                                     </>
-                                
                                 }
                                 <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600">Enviar</button>
                             </div>
@@ -229,7 +229,6 @@ const NewTransaction = ({type}) => {
                         }
                     </div>
                 </div>
-            }
         </>
     )
 }
