@@ -1,19 +1,24 @@
+
+import { EyeProvider } from "./Contexts/EyeContext.jsx";
+import { TransactionTypeProvider } from "./contexts/TransactionTypeContext.jsx";
+
 import SideBar from "./components/SideBar.jsx"
 import Header from "./components/Header"
 import MainPanel from "./components/MainPanel";
-import { EyeProvider } from "./Contexts/EyeContext.jsx";
 
 function App() {
   return (
-    <div className="flex flex-col">
-        <Header />
-      <div className="flex">
-        <EyeProvider>
+    <TransactionTypeProvider>
+      <div className="flex flex-col">
+      <Header />
+        <div className="grid grid-cols-2">
           <SideBar />
-          <MainPanel/>
-        </EyeProvider>
+          <EyeProvider>
+            <MainPanel/>
+          </EyeProvider>
+        </div>
       </div>
-    </div>
+    </TransactionTypeProvider>
   )
 }
 export default App
