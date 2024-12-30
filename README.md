@@ -1,6 +1,6 @@
 # Ofinance
 
-UI for a financial controller capable of recording expenses, income, and managing credit cards
+Fullstack web-based app for a financial controller capable of recording expenses, income, and managing credit cards
 
  "dependencies": {
     "dayjs": "^1.11.13",
