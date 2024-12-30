@@ -1,5 +1,8 @@
 import { IoMenuOutline } from "react-icons/io5";
+import { IoIosExit } from "react-icons/io";
 import erplogo from "../assets/images/ofinancelogo.png";
+import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const HeaderIcon = ( { icon } ) => (
     <button className="header-icon">
@@ -8,11 +11,19 @@ const HeaderIcon = ( { icon } ) => (
 ) 
 
 const Header = () =>{
+    const navigate = useNavigate();
+    const {logout} = useAuth()
     return(
-        <div className=" fixed top-0 left-0 z-10 bg-primary h-16 w-full text-white flex items-center">
-            <button className="ml-7 flex items-center pl-2">
+        <div className=" fixed top-0 left-0 z-10 bg-primary h-16 w-full text-white flex items-center justify-between">
+            <button className="ml-7 flex items-center pl-2" onClick={() =>{
+                navigate("/month");
+            }}>
                 <HeaderIcon icon={<IoMenuOutline size="16"/>}/>
-                <img src={erplogo} className="ml-5"></img>
+                <img src={erplogo} className="ml-5" />
+            </button>
+            <button className="flex items-center hover:bg-slate-400 hover: rounded-3xl mr-10" onClick={()=>logout()}>
+                <IoIosExit size={"50"}/>
+                <p>Sair</p>
             </button>
         </div>
     )
