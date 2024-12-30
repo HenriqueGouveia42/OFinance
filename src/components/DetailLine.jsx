@@ -4,7 +4,7 @@ const DetailLine = ({icon, content, action}) =>{
         <button className="flex justify-between items-center rounded-md p-6 m-1 w-full">
             <div className="text-left">{icon}</div>
             <div className="text-center">{content}</div>
-            <div className="text-right">{action}</div>
+            <div className="text-right hover:bg-slate-600 hover:shadow-5 hover: rounded-full">{action}</div>
         </button>
         <hr />
     </>
