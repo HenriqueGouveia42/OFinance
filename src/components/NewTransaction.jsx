@@ -10,6 +10,7 @@ import { FaPaperclip } from "react-icons/fa6";
 import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
+import { CiCirclePlus } from "react-icons/ci";
 //Componentes filhos
 import Toggle from "./Toggle";
 import Numpad from "./Numpad";
@@ -25,31 +26,65 @@ import { useContext } from "react";
 
 import { TransactionTypeContext } from "../contexts/TransactionTypeContext.jsx";
 
+import { useNavigate } from "react-router-dom";
+
 const NewTransaction = () => {
 
-    // Acessando o contexto
+    const handleSubmit = async() =>{
+        try{
+            const response = await fetch('http://localhost:5000/transaction/create', {
+                method: 'POST',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+                body: JSON.stringify(details) //Envia o objeto 'details' diretamente
+            });
+            if(!response.ok){
+                const errorData = await response.json;
+                alert("Erro ao criar nova transacao");
+                alert(`Erro: ${errorData}`);
+                return;
+            }
+            alert("Transacao criada com sucesso!");
+            navigate("/month");
+        }catch(error){
+            console.error('Erro ao salvar os dados: ', error);
+        }
+    }
+
+    const navigate = useNavigate();
+
+    //Acessa o contexto
     const {transactionType} = useContext(TransactionTypeContext);
 
-    //Objeto javascript que armazena todos os detalhes de uma transação que será enviada ao backend
+    //Objeto que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
-        user_id: null,
-        currency: 'BRL',
-        status: null,
+        amount: 0,
         type: null,
-        value: 0,
-        received: true,
-        selectedPayDay: null,
+        paid_out: true,
+        payDay: null,
         description: '',
         category: '',
-        account_id: '',
         account: '',
         attachment: null,
         fixed: false,
         repeat: false,
         typeRepeat: '',
-        remindMe: false
+        remindMe: "",
     });
-    //Atualiza os valores do objeto details  
+
+    
+
+    const handleTransactionType = (type) =>{
+        updateDetails('type', type)
+    }
+    
+    const handleTransactionValueInput = (value) => {
+        updateDetails('amount', value)
+        handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
+    }
+
     const updateDetails = (field, value) => {
         setDetails((prevDetails) => ({
             ...prevDetails,
@@ -57,26 +92,20 @@ const NewTransaction = () => {
         }));
     }
     //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
-    //Extrai o valor do campo se o parâmetro for um evento. (value = eventOrValue.target.value)
-    //Usa o valor diretamente se for passado como argumento. (value = eventOrValue)
     const updateDetailsField = (field) => (eventOrValue) =>{
         const value = (eventOrValue?.target) ? eventOrValue.target.value : eventOrValue
         updateDetails(field, value);
     }
-    const handleInputDate = updateDetailsField('selectedPayDay');
+    const handleInputDate = updateDetailsField('payDay');
     const handleInputDescription = updateDetailsField('description');
     const handleCategorySelected = updateDetailsField('category');
     const handleAccountSelected = updateDetailsField('account');
     const handleTypeRepeatClick = updateDetailsField('typeRepeat')
 
-    //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai via lifting-up-state, ou os detalhes da transação
+    //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai para o TransactionTypeContext
     const [isNumpadVisible, setIsNumpadVisible] = useState(true);
     const handleIsNumpadVisible = () =>{
         setIsNumpadVisible(prevValue => !prevValue)
-    }
-    const handleTransactionValueInput = (value) => {
-        updateDetails('value', value)
-        handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
     }
 
     const[more, setMore] = useState(false); //Estado especifico para UI
@@ -91,9 +120,13 @@ const NewTransaction = () => {
         }
     }, [details.repeat]);
 
+    useEffect(()=>{
+        updateDetails('type', transactionType);
+    }, [transactionType]); //Dependencia é transcationType 
+
     
     return(
-        <> 
+        <>  
                 <div className= "flex flex-col w-[20rem] overflow-x-hidden">
                     <div className={`flex flex-col h-1/5 max-w-full ${transactionType === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">
@@ -101,12 +134,12 @@ const NewTransaction = () => {
                                 <button className="p-3"><FaArrowCircleLeft color="white" size="25"
                                     onClick={
                                         (e)=>{
-                                            if (isNumpadVisible) handleIsNumpadVisible();
+                                            isNumpadVisible ? navigate("/month") : handleIsNumpadVisible();
                                             e.target.blur(); //Remove o foco do botão após o clique, essencial para evitara comportamentos inesperados
                                         }
                                     }
                                 />
-                                </button> {/* Botão só leva a renderizar o TransactionDetails se o componente Numpad estiver renderizado*/}
+                                </button>
                                 <h1 className="font-medium text-white">{transactionType == 'revenue' ? 'Nova receita' : 'Nova despesa'}</h1>
                             </div>
                         
@@ -121,7 +154,7 @@ const NewTransaction = () => {
                                             }
                                             }> 
                                                 {
-                                                    ((parseFloat(details.value))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})
+                                                    ((parseFloat(details.amount))).toLocaleString('pt-br', {style: 'currency', currency: 'BRL'})
                                                 }
                                                 <FaRegEdit className="ml-4" size={20}/>
                                     </button>
@@ -133,18 +166,18 @@ const NewTransaction = () => {
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
                         
                         {!isNumpadVisible &&
-                            <div className="flex flex-col h-80 justify-between overflow-y-scroll overflow-x-hidden">
+                            <div className="flex flex-col h-96 justify-between overflow-y-scroll overflow-x-hidden">
                                 <DetailLine 
                                     icon={<FaRegCheckCircle size={20} />}
-                                    content={details.received ?  <div className="text-xs">{transactionType === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
-                                    action={<Toggle toggleReceived={()=>updateDetails('received', !details.received)} state={details.received} />}
+                                    content={details.paid_out ?  <div className="text-xs">{transactionType === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
+                                    action={<Toggle toggleReceived={()=>updateDetails('paid_out', !details.paid_out)} state={details.paid_out} />}
                                 />
                                 <Datepicker
                                     showShortcuts={true}
                                     asSingle={true}
                                     readOnly={true}
                                     useRange={false}
-                                    value={details.selectedPayDay} 
+                                    value={details.payDay} 
                                     displayFormat="DD/MM/YYYY"
                                     popoverDirection="down"
                                     placeholder="Insira a data"
@@ -171,7 +204,9 @@ const NewTransaction = () => {
                                         handleCategorySelected={handleCategorySelected}
                                         />                    
                                     }
-                                    action={<IoIosArrowForward size={20}/>}
+                                    action={<CiCirclePlus size={30} onClick={()=>{
+                                        navigate("/new-expense-or-revenue-type")
+                                    }}/>}
                                 />
                                 <DetailLine
                                     icon={<CiWallet size={20}/>}
@@ -180,7 +215,9 @@ const NewTransaction = () => {
                                         handleAccountSelected={handleAccountSelected}
                                         />
                                     }
-                                    action={<IoIosArrowForward size={20}/>}
+                                    action={<CiCirclePlus size={30} onClick={()=>{
+                                        navigate("/new-account-type")
+                                    }}/>}
                                 />
                                 <DetailLine
                                     icon={<FaPaperclip size={20}/>}
@@ -223,9 +260,20 @@ const NewTransaction = () => {
                                         /> 
                                     </>
                                 }
-                                <button className="bg-slate-400 p-1 rounded-3xl m-2 hover:bg-slate-600">Enviar</button>
+                                <form className="bg-slate-400 p-1 rounded-3xl m-2 text-center"
+                                onSubmit={(e)=>{
+                                    e.preventDefault();
+                                    handleSubmit();
+                                }}>
+                                    <button
+                                        type="submit"
+                                        className="bg-slate-400 hover:bg-slate-600 h-full w-full  rounded-xl w-auto"
+                                    >
+                                        Enviar
+                                    </button>
+                                </form>
+                                {console.log(details)}
                             </div>
-                            
                         }
                     </div>
                 </div>
