@@ -17,6 +17,7 @@ const MonthContent = () => {
     })
 
     const {isVisible, toggleVisibility} = useContext(EyeContext);
+    
     return(
         <>
             <div className="flex flex-col">
