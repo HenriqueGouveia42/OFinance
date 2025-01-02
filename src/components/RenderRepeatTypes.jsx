@@ -7,9 +7,6 @@ const RenderRepeatTypes = ({handleTypeRepeatClick}) =>{
     [
         { value: 'daily', label: 'Todos os dias' },
         { value: 'weekly', label: 'Semanal' },
-        { value: 'first_day_of_month', label: 'Mensal no primeiro(a) dia' },
-        { value: 'annualy', label: 'Anual em dia' },
-        { value: 'every_day_of_week', label: 'Todos os dias da semana' },
     ];
 
     const [isListVisible, setIsListVisible] = useState(true);
