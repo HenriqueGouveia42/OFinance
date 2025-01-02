@@ -23,7 +23,7 @@ const Month = () =>{
     ];
     
     return(
-        <div className="relative flex flex-col justify-start items-center w-auto">
+        <div className="relative flex flex-col justify-start items-center min-w-96 min-h-96">
             <button
              onClick={toggleDropdown}
              className="flex items-auto p-2  hover:bg-green-600 hover:rounded-xl items-center" >
@@ -43,7 +43,7 @@ const Month = () =>{
                     ))}
                 </div>
             }
-            <div className=" bg-white rounded-3xl p-4 min-w-[10rem]">
+            <div className=" bg-white rounded-3xl p-4">
                     <MonthContent />
             </div>
         </div>
