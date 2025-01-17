@@ -24,18 +24,19 @@ function App() {
       <AuthProvider>
         <TransactionTypeProvider>
         <Routes>
-              {/*Rotas publicas*/}
-              <Route path="/signup" element={<PublicRoute><SignUp/></PublicRoute>}/>
-              <Route path="/login" element={<PublicRoute><Login/></PublicRoute>}/>
-              
-              {/*Rotas protegidas*/}
+          
+          <Route path="/signup" element={<PublicRoute><SignUp/></PublicRoute>}/>
+          <Route path="/login" element={<PublicRoute><Login/></PublicRoute>}/>
+          
+          {/*LoogedInLayout contem os tres principais componentes react da area logada: Header, SideBar e MainPanel, todos fixos*/}
+          {/*O que muda dinamicamente dependendo da rota acessada é o CONTEUDO de MainPanel, atraves de <Outlet />, que vai 'cuspir' os elmentos <Month />, <Accounts />, etc, dependendo da navegacao do usuario via navigate("...")*/}
           <Route path="/" element={<ProtectedRoute><EyeProvider><LoggedInLayout/></EyeProvider></ProtectedRoute>}> 
-            <Route path="month" element={<Month/>}/>
-            <Route path="newtransaction" element={<NewTransaction/>}/>
-            <Route path="accounts" element={<Accounts/>}/>
-            <Route path="credit-cards" element={<CreditCards/>}/>
-            <Route path="new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
-            <Route path="new-account-type" element={<NewAccountType/>}/>
+            <Route path="/month" element={<Month/>}/>
+            <Route path="/newtransaction" element={<NewTransaction/>}/>
+            <Route path="/accounts" element={<Accounts/>}/>
+            <Route path="/credit-cards" element={<CreditCards/>}/>
+            <Route path="/new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
+            <Route path="/new-account-type" element={<NewAccountType/>}/>
           </Route>
         </Routes>
         </TransactionTypeProvider>
