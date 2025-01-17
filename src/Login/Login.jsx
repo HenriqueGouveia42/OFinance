@@ -1,12 +1,41 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useAuth } from "../contexts/AuthContext";
 import { useNavigate } from "react-router-dom";
 const Login = () =>{
 
     const [email, setEmail] = useState("");
     const [password, setPassword] = useState("");
-    const {login} = useAuth(); //Hook useAuth para obter a função login()
+    const {login, loggout} = useAuth(); //Hook useAuth para obter a função login()
     const navigate = useNavigate(); //Hook useNavigate para navegação
+
+    useEffect(()=>{
+        const token = localStorage.getItem("token");
+        if(token){
+            const validateToken = async() =>{
+                try{
+                    const response = await fetch("http://localhost:5000/login/validate-token",{
+                        method: "POST",
+                        headers:{
+                            "Content-Type": "application/json",
+                            "Authorization": `Bearer ${token}`
+                        }
+                    });
+                if(response.ok){
+                    login(token);
+                    navigate('/month');
+                }else{
+                    localStorage.removeItem("token");
+                    loggout();
+                }
+                }catch(error){
+                    console.error("Erro ao validar token", error);
+                    loggout();
+                }
+            }
+            validateToken();
+        }
+        
+    }, [login, loggout, navigate])
 
     const handleSubmitLogin = async (e) =>{
         e.preventDefault();
@@ -29,7 +58,8 @@ const Login = () =>{
                 return; //Interrompe o fluxo
             }
             const data = await response.json();
-            //Se o login for bem sucedido, data.token carregará o token gerado pelo login
+            //Se o login for bem sucedido, data.token carregará o token JTW recebido do servidor.
+            //a função login recebe o token como argumento, o salva em localStorage, muda a variavel 'isAuthenticated' do contexto AuthContext para true e navega para a area logada.
             login(data.token);
             alert("Login feito com sucesso!");
             navigate('/month');
