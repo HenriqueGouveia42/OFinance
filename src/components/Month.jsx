@@ -1,36 +1,94 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import MonthContent from "./MonthContent"
 import { IoIosArrowDown } from "react-icons/io";
-
-
+import { SlArrowLeft } from "react-icons/sl";
+import { SlArrowRight } from "react-icons/sl";
 
 const Month = () =>{
-
-    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
-    const toggleDropdown = () =>{
-        setIsDropdownOpen((prevState) => !prevState)
-    }
-
-    const [selectedMonth, setSelectedMonth] = useState("Abril");
-    const handleMonthSelection = (month) =>{
-        setSelectedMonth(month);
-        setIsDropdownOpen(false); //Fecha o dropdown apos selecionar um mes
-    }
 
     const months = [
         "Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
         "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"
     ];
+
+    const currentMonthIndex = new Date().getMonth();
+    const currentMonth = months[currentMonthIndex];
+    const [month, setMonth] = useState(currentMonth);
+
+    const currentYear = new Date().getFullYear();
+    const [year, setYear] = useState(currentYear);
+
+    const [monthYearTransactions, setMonthYearTransactions] = useState(0);
+
+    const handleReadMonthTransactions = async() =>{
+        try{
+            const token = localStorage.getItem('token')
+            if(!token){
+                alert('Token nao encontrado!');
+                return;
+            }
+            const queryParams = new URLSearchParams({
+                month: month,
+                year: year
+            }).toString();
+
+            const response = await fetch(`http://localhost:5000/transaction/readMonthTransaction?${queryParams}`,{
+                method: 'GET',
+                headers:{
+                    'Content-Type': 'application/json',
+                    'Authorization': `Bearer ${token}`
+                },
+            });
+            if(response.ok){
+                const data = await response.json();
+                setMonthYearTransactions(data);
+            }else{
+                console.error('Falha ao buscar transacoes')
+            }
+            
+        }catch(error){
+            console.error('Erro ao ler as transacoes do mes: ', error)
+        }
+    }
+    useEffect(()=>{
+        handleReadMonthTransactions();
+    }, [month, year]) //O useEffect sera executado sempre quem os estados 'month' ou 'year' mudarem
+
+    const [isMonthDropdownOpen, setIsMonthDropdownOpen] = useState(false);
+    const toggleMonthDropdown = () =>{
+        setIsMonthDropdownOpen((prevState) => !prevState)
+    }
+
+    const handleMonthSelection = (month) =>{
+        setMonth(month);
+        setIsMonthDropdownOpen(false); //Fecha o dropdown apos selecionar um mes
+    }
+
     
+
+
+    const incrementYear = () =>{
+        setYear(prevYear => prevYear + 1);
+    }
+    const decrementYear = () =>{
+        setYear(prevYear => prevYear - 1 );
+    }
     return(
         <div className="relative flex flex-col justify-start items-center min-w-96 min-h-96">
-            <button
-             onClick={toggleDropdown}
-             className="flex items-auto p-2  hover:bg-green-600 hover:rounded-xl items-center" >
-                <h1 className="text-white text-xs font-bold">{selectedMonth}</h1>
-                <h2><IoIosArrowDown size={20} className="ml-4 bg-white rounded-2xl"/></h2>
-            </button>
-            {isDropdownOpen &&
+            <div className="justify-items-center">
+                <div className="flex space-x-3 items-center justify-center p-1 bg-slate-400 rounded-full">
+                    <button className="p-1 bg-slate-400 rounded-full hover:bg-slate-600" onClick={()=>decrementYear()}><SlArrowLeft /></button>
+                    <h1 className="text-white text-xl font-extrabold">{year}</h1>
+                    <button className="p-1 bg-slate-400 rounded-full hover:bg-slate-600" onClick={()=>incrementYear()}><SlArrowRight /></button>
+                </div>
+                <button
+                    onClick={toggleMonthDropdown}
+                    className="flex items-auto p-2  hover:bg-green-600 hover:rounded-xl items-center" >
+                    <h1 className="text-white text-xs font-bold">{month}</h1>
+                    <h2><IoIosArrowDown size={20} className="ml-4 bg-white rounded-2xl"/></h2>
+                </button>
+            </div>
+            {isMonthDropdownOpen &&
                 <div className="absolute top-12 bg-white rounded-xl shadow-lg p-2 min-w-[10rem]">
                     {months.map((month) => (
                         <button
@@ -44,7 +102,7 @@ const Month = () =>{
                 </div>
             }
             <div className=" bg-white rounded-3xl p-4">
-                    <MonthContent />
+                    <MonthContent monthYearTransaction={monthYearTransactions} />
             </div>
         </div>
         
