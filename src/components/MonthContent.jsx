@@ -4,17 +4,16 @@ import { FiEye } from "react-icons/fi";
 import { FiEyeOff } from "react-icons/fi"; 
 import { useContext } from 'react';
 import { EyeContext } from "../Contexts/EyeContext";
-import transactions from "../assets/transactions.json"
+
 
 import Notifications from "./Notifications"
 
-const MonthContent = () => {
-    var receita_total = 0;
-    var despesa_total = 0;
-
-    transactions.map(item=>{
-        item.income ? (receita_total += item.amount) : (despesa_total += item.amount)
-    })
+const MonthContent = ({monthYearTransaction}) => {
+    if(!monthYearTransaction){
+        return <p>Carregando...</p>
+    }
+    var receita_total = monthYearTransaction.revenue;
+    var despesa_total = monthYearTransaction.expense;
 
     const {isVisible, toggleVisibility} = useContext(EyeContext);
     
