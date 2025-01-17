@@ -84,7 +84,8 @@ const Numpad = ({transactionValueInput}) =>{
             </div>
             <div className="numpad-line">
                 <button className="numpad-bottom-button" onClick={()=>handleDeleteDigitButtonClick()}><CgBackspace size="35"/></button>
-                <button className="numpad-bottom-button" onClick={() => {
+                <button className="numpad-bottom-button"
+                    onClick={() => {
                         inputNumber === '' ? transactionValueInput('0') : transactionValueInput(inputNumber);
                         resetInputNumber();
                     }}>
