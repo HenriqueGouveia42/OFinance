@@ -32,6 +32,11 @@ const NewTransaction = () => {
 
     const handleSubmit = async() =>{
         try{
+            const token = localStorage.getItem('token'); //Obtem o token
+            if(!token){
+                alert("Token nao encontrado!");
+                return;
+            }
             const response = await fetch('http://localhost:5000/transaction/create', {
                 method: 'POST',
                 headers:{
@@ -41,12 +46,11 @@ const NewTransaction = () => {
                 body: JSON.stringify(details) //Envia o objeto 'details' diretamente
             });
             if(!response.ok){
-                const errorData = await response.json;
+                const errorData = await response.json();
                 alert("Erro ao criar nova transacao");
                 alert(`Erro: ${errorData}`);
                 return;
             }
-            alert("Transacao criada com sucesso!");
             navigate("/month");
         }catch(error){
             console.error('Erro ao salvar os dados: ', error);
@@ -58,30 +62,26 @@ const NewTransaction = () => {
     //Acessa o contexto
     const {transactionType} = useContext(TransactionTypeContext);
 
+    
     //Objeto que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
         amount: 0,
         type: null,
         paid_out: true,
         payDay: null,
-        description: '',
-        category: '',
-        account: '',
+        description: null,
+        category: null,
+        account: null,
         attachment: null,
         fixed: false,
         repeat: false,
-        typeRepeat: '',
-        remindMe: "",
+        typeRepeat: null,
+        remindMe: null,
     });
 
     
-
-    const handleTransactionType = (type) =>{
-        updateDetails('type', type)
-    }
-    
     const handleTransactionValueInput = (value) => {
-        updateDetails('amount', value)
+        updateDetails('amount', parseFloat(value));
         handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
     }
 
@@ -91,12 +91,16 @@ const NewTransaction = () => {
             [field]: value,
         }));
     }
-    //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
+
+     //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
     const updateDetailsField = (field) => (eventOrValue) =>{
         const value = (eventOrValue?.target) ? eventOrValue.target.value : eventOrValue
         updateDetails(field, value);
     }
+
+
     const handleInputDate = updateDetailsField('payDay');
+    
     const handleInputDescription = updateDetailsField('description');
     const handleCategorySelected = updateDetailsField('category');
     const handleAccountSelected = updateDetailsField('account');
@@ -124,10 +128,12 @@ const NewTransaction = () => {
         updateDetails('type', transactionType);
     }, [transactionType]); //Dependencia é transcationType 
 
+    const [isSubmitButtonOn, setIsSubmitButtonOn] = useState(false);
     
     return(
         <>  
-                <div className= "flex flex-col w-[20rem] overflow-x-hidden">
+        {console.log(details)}
+                <div className= "flex flex-col w-[30rem] overflow-x-hidden">
                     <div className={`flex flex-col h-1/5 max-w-full ${transactionType === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">
                                 {/*Se o componente filho Numpad estiver renderizado, 'isNumpadVisible' tem seu valor lógico invertido, fazendo 'Numpad' sumir e os detalhes da transação serem renderizados em seu lugar*/}
@@ -162,27 +168,25 @@ const NewTransaction = () => {
                         </div>
                     </div>
                     <div className="flex flex-col h-4/5 w-full bg-white">
-                        
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
-                        
                         {!isNumpadVisible &&
-                            <div className="flex flex-col h-96 justify-between overflow-y-scroll overflow-x-hidden">
+                            <div className="flex flex-col h-[30rem] justify-between overflow-y-scroll overflow-x-hidden">
                                 <DetailLine 
                                     icon={<FaRegCheckCircle size={20} />}
                                     content={details.paid_out ?  <div className="text-xs">{transactionType === 'revenue' ? 'Recebido' : 'Pago'}</div>: <div className="text-xs">Pendente</div>}
                                     action={<Toggle toggleReceived={()=>updateDetails('paid_out', !details.paid_out)} state={details.paid_out} />}
                                 />
-                                <Datepicker
-                                    showShortcuts={true}
-                                    asSingle={true}
-                                    readOnly={true}
-                                    useRange={false}
-                                    value={details.payDay} 
-                                    displayFormat="DD/MM/YYYY"
-                                    popoverDirection="down"
-                                    placeholder="Insira a data"
-                                    onChange={newValue => handleInputDate(newValue)}
-                                />
+                                    <Datepicker
+                                        showShortcuts={true}
+                                        asSingle={true}
+                                        readOnly={true}
+                                        useRange={false}
+                                        value={details.payDay} 
+                                        displayFormat="DD/MM/YYYY"
+                                        popoverDirection="down"
+                                        placeholder="Insira a data"
+                                        onChange={newValue => handleInputDate(newValue)}
+                                    />
                                 <DetailLine
                                     icon={
                                         <button className="hover: cursor-pointer hover:bg-gray-400 hover: rounded-full"><MdKeyboardVoice size={20} /></button>
@@ -268,11 +272,12 @@ const NewTransaction = () => {
                                     <button
                                         type="submit"
                                         className="bg-slate-400 hover:bg-slate-600 h-full w-full  rounded-xl w-auto"
+                                        disabled={false}
                                     >
                                         Enviar
                                     </button>
                                 </form>
-                                {console.log(details)}
+                                
                             </div>
                         }
                     </div>
