@@ -14,7 +14,7 @@ export const AuthProvider = ({ children }) => {
 
             if (token) {
                 try {
-                    const response = await fetch('http://localhost:5000/login/verify-token', {
+                    const response = await fetch('http://localhost:5000/login/validate-token', {
                         method: 'POST',
                         headers: {
                             'Authorization': `Bearer ${token}`,
