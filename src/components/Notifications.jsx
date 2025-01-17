@@ -1,6 +1,5 @@
 import { FaArrowCircleDown, FaArrowCircleUp } from "react-icons/fa";
 import { GoArrowDown } from "react-icons/go";
-import transactions from "../assets/transactions.json";
 import { useContext } from 'react';
 import { EyeContext } from "../Contexts/EyeContext";
 
@@ -30,18 +29,12 @@ const NotificationsContent = ({ type, quantity, amount }) => {
 
 
 const Notifications = () => {
-    const { qntd_receitas_pendentes, receitas_pendentes, qntd_despesas_pendentes, despesas_pendentes } = transactions.reduce((acc, item) => {
-        if (!item.paid_out) {
-            if (item.income) {
-                acc.qntd_receitas_pendentes++;
-                acc.receitas_pendentes += item.amount;
-            } else {
-                acc.qntd_despesas_pendentes++;
-                acc.despesas_pendentes += item.amount;
-            }
-        }
-        return acc;
-    }, { qntd_receitas_pendentes: 0, receitas_pendentes: 0, qntd_despesas_pendentes: 0, despesas_pendentes: 0 });
+    
+    let qntd_receitas_pendentes = 12;
+    let receitas_pendentes = 1503;
+
+    let qntd_despesas_pendentes = 7;
+    let despesas_pendentes = 3000;
 
     return (
         <div className="flex flex-col items-center">
