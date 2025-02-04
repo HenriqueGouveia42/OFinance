@@ -12,16 +12,16 @@ const MonthContent = ({monthYearTransaction}) => {
     if(!monthYearTransaction){
         return <p>Carregando...</p>
     }
-    var receita_total = monthYearTransaction.revenue;
-    var despesa_total = monthYearTransaction.expense;
+    var receita_total = monthYearTransaction.sumPaidRevenue + monthYearTransaction.sumUnpaidRevenue; 
+    var despesa_total = monthYearTransaction.sumPaidExpense + monthYearTransaction.sumUnpaidExpense;
 
     const {isVisible, toggleVisibility} = useContext(EyeContext);
     
     return(
         <>
-            <div className="flex flex-col">
+            <div className="flex flex-col space-y-2">
                 <div className="flex justify-center">
-                    <h1 className="text-xs">Saldo em Contas</h1>
+                    <h1 className="text-xs">Saldo Total de Todas as Contas</h1>
                 </div>
                 <div className="flex flex-col justify-center items-center">
                     {isVisible ? <h1 className="font-mono text-xs">R$5.400,00</h1> :  <div className="bg-black font-mono text-xs w-30">null</div> }
