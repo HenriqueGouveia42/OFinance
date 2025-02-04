@@ -31,7 +31,6 @@ const Month = () =>{
                 month: month,
                 year: year
             }).toString();
-
             const response = await fetch(`http://localhost:5000/transaction/readMonthTransaction?${queryParams}`,{
                 method: 'GET',
                 headers:{
