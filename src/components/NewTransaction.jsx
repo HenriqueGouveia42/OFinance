@@ -220,7 +220,7 @@ const NewTransaction = () => {
                                         />
                                     }
                                     action={<CiCirclePlus size={30} onClick={()=>{
-                                        navigate("/new-account-type")
+                                        navigate("/accounts")
                                     }}/>}
                                 />
                                 <DetailLine
