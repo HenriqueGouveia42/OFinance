@@ -24,6 +24,7 @@ export default {
         secondary: '#5865f2',
         purple:'#800080',
         gray: colors.neutral,
+        maingray: '#393943',
         gray: {
           900: '#202225',
           800: '#2f3136',
