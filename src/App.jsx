@@ -14,7 +14,7 @@ import NewTransaction from "./components/NewTransaction.jsx";
 import Accounts from "./components/Accounts.jsx"
 import CreditCards from "./components/CreditCards.jsx";
 import NewExpenseOrRevenueType from "./components/NewExpenseOrRevenueType.jsx";
-import NewAccountType from "./components/NewAccountType.jsx";
+import CreateAccountType from "./components/CreateAccount.jsx";
 
 import LoggedInLayout from "./components/LoggedInLayout.jsx";
 
@@ -36,7 +36,6 @@ function App() {
             <Route path="/accounts" element={<Accounts/>}/>
             <Route path="/credit-cards" element={<CreditCards/>}/>
             <Route path="/new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
-            <Route path="/new-account-type" element={<NewAccountType/>}/>
           </Route>
         </Routes>
         </TransactionTypeProvider>
