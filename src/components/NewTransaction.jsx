@@ -32,18 +32,13 @@ const NewTransaction = () => {
 
     const handleSubmit = async() =>{
         try{
-            const token = localStorage.getItem('token'); //Obtem o token
-            if(!token){
-                alert("Token nao encontrado!");
-                return;
-            }
             const response = await fetch('http://localhost:5000/transaction/create', {
                 method: 'POST',
                 headers:{
                     'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
                 },
-                body: JSON.stringify(details) //Envia o objeto 'details' diretamente
+                body: JSON.stringify(details), //Envia o objeto 'details' diretamente,
+                credentials: true,
             });
             if(!response.ok){
                 const errorData = await response.json();
@@ -51,6 +46,7 @@ const NewTransaction = () => {
                 alert(`Erro: ${errorData}`);
                 return;
             }
+            alert("Transação criada com sucesso")
             navigate("/month");
         }catch(error){
             console.error('Erro ao salvar os dados: ', error);
@@ -132,7 +128,6 @@ const NewTransaction = () => {
     
     return(
         <>  
-        {console.log(details)}
                 <div className= "flex flex-col w-[30rem] overflow-x-hidden">
                     <div className={`flex flex-col h-1/5 max-w-full ${transactionType === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">

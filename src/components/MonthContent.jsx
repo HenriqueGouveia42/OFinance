@@ -12,8 +12,8 @@ const MonthContent = ({monthYearTransaction}) => {
     if(!monthYearTransaction){
         return <p>Carregando...</p>
     }
-    var receita_total = monthYearTransaction.sumPaidRevenue + monthYearTransaction.sumUnpaidRevenue; 
-    var despesa_total = monthYearTransaction.sumPaidExpense + monthYearTransaction.sumUnpaidExpense;
+    var receita_total = monthYearTransaction.transactionsResult.sumMonthRevenue;
+    var despesa_total = monthYearTransaction.transactionsResult.sumMonthExpense;
 
     const {isVisible, toggleVisibility} = useContext(EyeContext);
     

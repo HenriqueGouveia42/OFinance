@@ -1,34 +1,42 @@
+import { useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
 
 const CreateAccount = () =>{
+
     const navigate = useNavigate();
 
-    
-    const handleSubmit = (event)=>{
-        event.preventDefaul();
-        
-        const token = localStorage.getItem("token");
-        if(!token){
-            alert("Token nao encontrado!");
-            return;
+    const handleSubmit = async (e)=>{
+        e.preventDefault()
+        const createAcc = await fetch('http://localhost:5000/accounts/create-account',{
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({accountName}),
+            credentials: 'include', //Permite cookies HTTP-Only
+        })
+        if(createAcc.ok){
+            alert("Conta criada com sucesso");
+        }else{
+            alert("Não foi possivel criar a conta");
         }
-        navigate("/accounts")
     }
+
+    const handleInputChange = (e) =>{
+        setAccountName(e.target.value)
+    }
+
+    const [accountName, setAccountName] = useState(null);
+
     return(
-        <div className="w-4/5 h-4/5 bg-maingray rounded-3xl p-3">
-            <div className="flex space-x-5 items-center text-white">
-                <button
-                className="hover:bg-slate-400 rounded-full p-1"
-                onClick={()=>navigate("/accounts")}
-                >
-                    <FaArrowLeftLong size={30}/>
-                </button>
-                <h2>Nova conta</h2>
-            </div>
-            <form className="flex flex-col items-center">
-                <input className="rounded-3xl p-2" type="text" placeholder="Nome da nova conta"/>
-                <button className="bg-cyan-600 rounded-3xl w-36 p-2 mt-6" type="submit" onClick={()=>handleSubmit()}>Criar nova conta</button>
+        <div className="bg-maingray w-4/5 h-4/5 rounded-3xl p-3 justify-items-center space-y-4">
+            {console.log(accountName)}
+            <button><FaArrowLeftLong  className="bg-white rounded-full p-1 hover:bg-slate-200" size={30} onClick={()=>navigate("/accounts")}/></button>
+            <p>Insira o nome da conta</p>
+            <form className="flex flex-col space-y-3" onSubmit={handleSubmit}>
+                <input type="text" placeholder="Nome da conta" onChange={handleInputChange}></input>
+                <button type="submit" className="bg-blue-500 rounded-full p-1">Criar conta</button>
             </form>
         </div>
     )

@@ -1,11 +1,11 @@
 
 import { EyeProvider } from "./Contexts/EyeContext.jsx";
 import { TransactionTypeProvider } from "./contexts/TransactionTypeContext.jsx";
-import { BrowserRouter as Router, Route, Routes, Navigate } from "react-router-dom";
+import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import PublicRoute from "./routes/PublicRoute.jsx";
-
 import SignUp from './SignUp/SignUp.jsx'
 import Login from './Login/Login.jsx'
 
@@ -14,7 +14,7 @@ import NewTransaction from "./components/NewTransaction.jsx";
 import Accounts from "./components/Accounts.jsx"
 import CreditCards from "./components/CreditCards.jsx";
 import NewExpenseOrRevenueType from "./components/NewExpenseOrRevenueType.jsx";
-import CreateAccountType from "./components/CreateAccount.jsx";
+import CreateAccount from "./components/CreateAccount.jsx";
 
 import LoggedInLayout from "./components/LoggedInLayout.jsx";
 
@@ -33,7 +33,8 @@ function App() {
           <Route path="/" element={<ProtectedRoute><EyeProvider><LoggedInLayout/></EyeProvider></ProtectedRoute>}> 
             <Route path="/month" element={<Month/>}/>
             <Route path="/newtransaction" element={<NewTransaction/>}/>
-            <Route path="/accounts" element={<Accounts/>}/>
+            <Route path="/accounts" element={<Accounts/>} />
+            <Route path="create-account" element={<CreateAccount/>} />
             <Route path="/credit-cards" element={<CreditCards/>}/>
             <Route path="/new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
           </Route>

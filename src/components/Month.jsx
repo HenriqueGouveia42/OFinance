@@ -18,25 +18,19 @@ const Month = () =>{
     const currentYear = new Date().getFullYear();
     const [year, setYear] = useState(currentYear);
 
-    const [monthYearTransactions, setMonthYearTransactions] = useState(0);
+    const [monthYearTransactions, setMonthYearTransactions] = useState(null);
 
     const handleReadMonthTransactions = async() =>{
         try{
-            const token = localStorage.getItem('token')
-            if(!token){
-                alert('Token nao encontrado!');
-                return;
-            }
+
             const queryParams = new URLSearchParams({
                 month: month,
                 year: year
             }).toString();
+
             const response = await fetch(`http://localhost:5000/transaction/readMonthTransaction?${queryParams}`,{
                 method: 'GET',
-                headers:{
-                    'Content-Type': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                },
+                credentials: 'include', //Permite o envio de cookies Http Only
             });
             if(response.ok){
                 const data = await response.json();
@@ -62,9 +56,6 @@ const Month = () =>{
         setMonth(month);
         setIsMonthDropdownOpen(false); //Fecha o dropdown apos selecionar um mes
     }
-
-    
-
 
     const incrementYear = () =>{
         setYear(prevYear => prevYear + 1);

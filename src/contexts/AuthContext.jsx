@@ -35,14 +35,21 @@ export const AuthProvider = ({ children }) => {
         verifyToken();
     }, []);
 
-    const login = (token) => {
-        localStorage.setItem('token', token);
+    const login = () => {
         setIsAuthenticated(true);
     };
 
-    const logout = () => {
-        localStorage.removeItem('token');
-        setIsAuthenticated(false);
+    const logout = async() => {
+        try{
+            await fetch("http://localhost:5000/auth/logout",{
+                method: "POST",
+                credentials: "include",
+            });
+            setIsAuthenticated(false);
+
+        }catch(error){
+            console.error("Erro ao fazer logout: ", error);
+        }
     };
 
     return (
