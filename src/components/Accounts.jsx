@@ -1,42 +1,28 @@
-import { useEffect, useState } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate} from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
 
 const Accounts = () => {
     const navigate = useNavigate();
+    //const [accounts, setAccounts] = useState(null);
+    const {userData, loading} = useAuth();
 
-    const [accounts, setAccounts] = useState(null);
-
-    const getAccounts = async() =>{
-        try{
-            const response = await fetch('http://localhost:5000/accounts/get-accounts',{
-                method: 'GET',
-                credentials: 'include', //Permite o envio de cookies Http Only
-            })
-            if(response.ok){
-                const data = await response.json();
-                setAccounts(data);
-            }else{
-                console.error("Erro ao buscar as contas do usuario");
-            }
-        }catch(error){
-            console.error("Erro ao recuperar contas do usuario");
-        }
+    if(loading || !userData){
+        return <p>Carregando dados do usuario...</p>
     }
-    useEffect(()=>{
-        getAccounts();
-    }, []);
 
-    const RenderAccounts = ({accounts}) =>{
+    var accounts = userData.accounts
+
+        const RenderAccounts = ({accounts}) =>{
         if(accounts.lenght == 0){
             return <p>Nenhuma conta cadastrada!</p>
         }else{
             return accounts.map((account)=>(
                 <li key={account.id}>
                     <div className="flex space-x-3 items-center">
-                        <icon>
+                        <div>
                             SIMBOL
-                        </icon>
+                        </div>
                         <div className="flex flex-col">
                             <div className="text-white">{account.name}</div>
                             <div className={`${account.balance >= 0 ? "text-green-600" : "text-red-600"}`}>{account.balance.toLocaleString('pt-Br', {style: 'currency', currency: 'BRL'})}</div>
