@@ -12,21 +12,21 @@ const Login = () => {
     useEffect(() => {
         const checkAuthStatus = async () => {
             try {
-                const response = await fetch("http://localhost:5000/auth/login/status", {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/status`, {
                     method: "GET",
                     credentials: 'include', // Permite envio de cookies HTTP-only
                 });
 
                 if (response.ok) {
                     const data = await response.json();
-                    login(); // Marca o usuário como autenticado
+                    login(); //A variável de contexto 'isAuthenticated' recebe true
                     navigate('/month'); // Redireciona para a página protegida
                 } else {
                     logout(); // Marca como deslogado
                 }
             } catch (error) {
                 console.error("Erro ao validar token:", error);
-                lggout(); // Em caso de erro, assume que o usuário está deslogado
+                logout(); // Em caso de erro, assume que o usuário está deslogado
             }
         };
 
@@ -39,7 +39,7 @@ const Login = () => {
     const handleSubmitLogin = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch('http://localhost:5000/auth/login', {
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login`, {
                 method: 'POST',
                 headers: {
                     'Content-Type': 'application/json',
@@ -54,13 +54,13 @@ const Login = () => {
                 return;
             }
 
-            login(); // Atualiza o estado do usuário como autenticado
+            login(); //A variável de contexto 'isAuthenticated' recebe true
             alert("Login feito com sucesso!");
-            navigate('/month'); // Redireciona para a página protegida
+            navigate('/month'); //Redireciona para a página protegida
 
         } catch (error) {
+            console.error('Erro ao logar', error);
             alert("Erro ao logar");
-            console.error(error);
         }
     };
 
