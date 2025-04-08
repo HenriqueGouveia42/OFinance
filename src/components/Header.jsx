@@ -12,31 +12,11 @@ const HeaderIcon = ( { icon } ) => (
 ); 
 const Header = () =>{
 
+    const {logout, userData} = useAuth();
     const [username, setUsername] = useState('');
     const navigate = useNavigate();
-    const {logout} = useAuth();
 
-    useEffect(()=>{
-        const fetchUserData = async() =>{
-            try{
-                const response = await fetch("http://localhost:5000/auth/login/status", {
-                    method: "GET",
-                    credentials: 'include', //Permite o envio de cookies HTTP-only
-                })
-                if(response.ok){
-                    const data = await response.json();
-                    console.log("Dados recebidos: ", data);
-                    setUsername(data.decoded.name);
-                }else{
-                    console.error("Erro ao buscar usuario autenticado: ", error);
-                }
-            }catch(error){
-                console.error("Erro ao buscar o usuario autenticado: ", error);
-            };
-        }
-            fetchUserData();
-        
-    }, []); //Array de dependências vazio para evitar chamadas infinitas
+    
     return(
         <div className=" fixed top-0 left-0 z-10 bg-primary h-16 w-full text-white flex items-center justify-between">
             <div className="ml-7 flex items-center pl-2" onClick={() =>{
@@ -45,7 +25,7 @@ const Header = () =>{
                 <HeaderIcon icon={<IoMenuOutline size="24"/>}/>
                 <img src={erplogo} className="ml-5" />
             </div>
-            <p>{`Bem vindo, ${username}`}</p>
+            <p>{`Bem vindo, ${(userData ? userData.name : null)}`}</p>
             <button className="flex items-center hover:bg-slate-400 hover: rounded-3xl mr-10" onClick={()=>logout()}>
                 <IoIosExit size={"50"}/>
                 <p>Sair</p>
