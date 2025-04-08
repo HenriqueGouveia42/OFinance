@@ -1,5 +1,5 @@
 
-import { EyeProvider } from "./Contexts/EyeContext.jsx";
+import { EyeProvider } from './contexts/EyeContext.jsx';
 import { TransactionTypeProvider } from "./contexts/TransactionTypeContext.jsx";
 import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
@@ -8,39 +8,49 @@ import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import PublicRoute from "./routes/PublicRoute.jsx";
 import SignUp from './SignUp/SignUp.jsx'
 import Login from './Login/Login.jsx'
+import Home from './Home/Home.jsx'
 
-import Month from "./components/Month.jsx";
-import NewTransaction from "./components/NewTransaction.jsx";
-import Accounts from "./components/Accounts.jsx"
-import CreditCards from "./components/CreditCards.jsx";
-import NewExpenseOrRevenueType from "./components/NewExpenseOrRevenueType.jsx";
-import CreateAccount from "./components/CreateAccount.jsx";
+import { lazy, Suspense } from 'react';
 
-import LoggedInLayout from "./components/LoggedInLayout.jsx";
+const Month = lazy(() => import("./components/Month.jsx"));
+const NewTransaction = lazy(() => import("./components/NewTransaction.jsx"));
+const Accounts = lazy(() => import("./components/Accounts.jsx"));
+const CreditCards = lazy(() => import("./components/CreditCards.jsx"));
+const NewExpenseOrRevenueType = lazy(() => import("./components/NewExpenseOrRevenueType.jsx"));
+const CreateAccount = lazy(() => import("./components/CreateAccount.jsx"));
+const LoggedInLayout = lazy(() => import("./components/LoggedInLayout.jsx"));
+
+import LoadingWrapper from './wrappers/LoadingWrapper.jsx';
 
 function App() {
   return (
     <Router>
-      <AuthProvider>
-        <TransactionTypeProvider>
-        <Routes>
-          
-          <Route path="/signup" element={<PublicRoute><SignUp/></PublicRoute>}/>
-          <Route path="/login" element={<PublicRoute><Login/></PublicRoute>}/>
-          
-          {/*LoogedInLayout contem os tres principais componentes react da area logada: Header, SideBar e MainPanel, todos fixos*/}
-          {/*O que muda dinamicamente dependendo da rota acessada é o CONTEUDO de MainPanel, atraves de <Outlet />, que vai 'cuspir' os elmentos <Month />, <Accounts />, etc, dependendo da navegacao do usuario via navigate("...")*/}
-          <Route path="/" element={<ProtectedRoute><EyeProvider><LoggedInLayout/></EyeProvider></ProtectedRoute>}> 
-            <Route path="/month" element={<Month/>}/>
-            <Route path="/newtransaction" element={<NewTransaction/>}/>
-            <Route path="/accounts" element={<Accounts/>} />
-            <Route path="create-account" element={<CreateAccount/>} />
-            <Route path="/credit-cards" element={<CreditCards/>}/>
-            <Route path="/new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
-          </Route>
-        </Routes>
-        </TransactionTypeProvider>
-      </AuthProvider>
+      <Suspense fallback={<div>Carregando página...</div>}>
+        <AuthProvider>
+          <TransactionTypeProvider>
+          <Routes>
+            <Route path="/signup" element={<PublicRoute><SignUp/></PublicRoute>}/>
+            <Route path="/login" element={<PublicRoute><Login/></PublicRoute>}/>
+            <Route path="/home" element={<PublicRoute><Home/></PublicRoute>}></Route>
+
+            <Route path="/" element={<ProtectedRoute><EyeProvider><LoggedInLayout/></EyeProvider></ProtectedRoute>}> 
+              <Route path="/month" element={<Month/>}/>
+              <Route path="/newtransaction" element={
+                <LoadingWrapper children={
+                  <NewTransaction/>
+                }>
+                </LoadingWrapper>
+              }/>
+              <Route path="/accounts" element={<Accounts/>} />
+              <Route path="create-account" element={<CreateAccount/>} />
+              <Route path="/credit-cards" element={<CreditCards/>}/>
+              <Route path="/new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
+            </Route>
+
+          </Routes>
+          </TransactionTypeProvider>
+        </AuthProvider>
+      </Suspense>
     </Router>
   )
 }
