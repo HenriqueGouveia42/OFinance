@@ -1,8 +1,11 @@
 import Accounts from "../assets/Accounts.json"
 
 import { useState } from "react"
+import { useAuth } from "../contexts/AuthContext"
 
 const RenderAccounts = ({handleAccountSelected}) =>{
+
+    const {userData} = useAuth();
     
 
     const [isListVisible, setIsListVisible] = useState(true)
@@ -15,25 +18,25 @@ const RenderAccounts = ({handleAccountSelected}) =>{
         setAccountLabel(label)
     }
 
-    const accounts = Accounts;
+    const accounts = userData.accounts;
 
     return(
         <>
             {isListVisible ?
                 <ul className="border border-black border-1  rounded-2xl">
                     {accounts.map((acc) =>
-                        <li key={acc.value}>
+                        <li key={acc.id}>
                             <button
                             className="account-icon"
                             onClick={() => 
                             {
-                                handleAccountSelected(acc.value);
-                                handleSetAccountLabel(acc.label);
+                                handleAccountSelected(acc.id);
+                                handleSetAccountLabel(acc.name);
                                 toggleIsListVisible();
                             }
                             }
                             >
-                                {acc.label}
+                                {acc.name}
                             </button>
                         </li>
                     )}

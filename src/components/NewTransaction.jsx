@@ -1,4 +1,3 @@
-//Icones
 import { FaArrowCircleLeft } from "react-icons/fa";
 import { FaRegEdit } from "react-icons/fa";
 import { FaRegCheckCircle } from "react-icons/fa";
@@ -11,7 +10,7 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
-//Componentes filhos
+
 import Toggle from "./Toggle";
 import Numpad from "./Numpad";
 import DetailLine from "./DetailLine";
@@ -19,7 +18,7 @@ import RenderCategories from "./RenderCategories";
 import RenderRepeatTypes from "./RenderRepeatTypes";
 import RenderAccounts from "./RenderAccounts";
 import Datepicker from "react-tailwindcss-datepicker"
-//Hooks
+
 import { useState } from "react";
 import { useEffect } from "react";
 import { useContext } from "react";
@@ -28,17 +27,16 @@ import { TransactionTypeContext } from "../contexts/TransactionTypeContext.jsx";
 
 import { useNavigate } from "react-router-dom";
 
+import LoadingWrapper from "../wrappers/LoadingWrapper.jsx";
+
 const NewTransaction = () => {
 
     const handleSubmit = async() =>{
         try{
             const response = await fetch('http://localhost:5000/transaction/create', {
                 method: 'POST',
-                headers:{
-                    'Content-Type': 'application/json',
-                },
+                credentials: 'include',
                 body: JSON.stringify(details), //Envia o objeto 'details' diretamente,
-                credentials: true,
             });
             if(!response.ok){
                 const errorData = await response.json();
@@ -62,12 +60,12 @@ const NewTransaction = () => {
     //Objeto que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
         amount: 0,
-        type: null,
+        type: transactionType,
         paid_out: true,
         payDay: null,
         description: null,
-        category: null,
-        account: null,
+        categoryId: null,
+        accountId: null,
         attachment: null,
         fixed: false,
         repeat: false,
@@ -87,19 +85,15 @@ const NewTransaction = () => {
             [field]: value,
         }));
     }
-
-     //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
+    //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
     const updateDetailsField = (field) => (eventOrValue) =>{
         const value = (eventOrValue?.target) ? eventOrValue.target.value : eventOrValue
         updateDetails(field, value);
     }
-
-
     const handleInputDate = updateDetailsField('payDay');
-    
     const handleInputDescription = updateDetailsField('description');
-    const handleCategorySelected = updateDetailsField('category');
-    const handleAccountSelected = updateDetailsField('account');
+    const handleCategorySelected = updateDetailsField('categoryId');
+    const handleAccountSelected = updateDetailsField('accountId');
     const handleTypeRepeatClick = updateDetailsField('typeRepeat')
 
     //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai para o TransactionTypeContext
@@ -122,12 +116,13 @@ const NewTransaction = () => {
 
     useEffect(()=>{
         updateDetails('type', transactionType);
-    }, [transactionType]); //Dependencia é transcationType 
+    }, [transactionType]);
 
     const [isSubmitButtonOn, setIsSubmitButtonOn] = useState(false);
     
     return(
-        <>  
+        <div className="bg-maingray w-4/5  rounded-3xl p-3 justify-items-center">
+            {console.log(details)}
                 <div className= "flex flex-col w-[30rem] overflow-x-hidden">
                     <div className={`flex flex-col h-1/5 max-w-full ${transactionType === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">
@@ -163,7 +158,9 @@ const NewTransaction = () => {
                         </div>
                     </div>
                     <div className="flex flex-col h-4/5 w-full bg-white">
+
                         {isNumpadVisible && <Numpad transactionValueInput={handleTransactionValueInput}/>}
+
                         {!isNumpadVisible &&
                             <div className="flex flex-col h-[30rem] justify-between overflow-y-scroll overflow-x-hidden">
                                 <DetailLine 
@@ -198,10 +195,13 @@ const NewTransaction = () => {
                                 <DetailLine
                                     icon={<FaTag size={20}/>}
                                     content={
-                                        <RenderCategories
-                                        type={transactionType}
-                                        handleCategorySelected={handleCategorySelected}
-                                        />                    
+                                        <LoadingWrapper children={
+                                            <RenderCategories
+                                            type={transactionType}
+                                            handleCategorySelected={handleCategorySelected}
+                                            /> 
+                                        }>
+                                        </LoadingWrapper>                   
                                     }
                                     action={<CiCirclePlus size={30} onClick={()=>{
                                         navigate("/new-expense-or-revenue-type")
@@ -210,9 +210,12 @@ const NewTransaction = () => {
                                 <DetailLine
                                     icon={<CiWallet size={20}/>}
                                     content={
-                                        <RenderAccounts
-                                        handleAccountSelected={handleAccountSelected}
-                                        />
+                                        <LoadingWrapper children={
+                                            <RenderAccounts
+                                                handleAccountSelected={handleAccountSelected}
+                                            />
+                                        }>
+                                        </LoadingWrapper>
                                     }
                                     action={<CiCirclePlus size={30} onClick={()=>{
                                         navigate("/accounts")
@@ -268,6 +271,7 @@ const NewTransaction = () => {
                                         type="submit"
                                         className="bg-slate-400 hover:bg-slate-600 h-full w-full  rounded-xl w-auto"
                                         disabled={false}
+                                        onClick={() => handleSubmit(details)}
                                     >
                                         Enviar
                                     </button>
@@ -277,7 +281,7 @@ const NewTransaction = () => {
                         }
                     </div>
                 </div>
-        </>
+        </div>
     )
 }
 export default NewTransaction

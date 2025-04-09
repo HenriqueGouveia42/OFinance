@@ -1,12 +1,14 @@
 import { FaArrowCircleDown, FaArrowCircleUp } from "react-icons/fa";
 import { GoArrowDown } from "react-icons/go";
 import { useContext } from 'react';
-import { EyeContext } from "../Contexts/EyeContext";
+import { EyeContext } from "../contexts/EyeContext";
 
 
-const NotificationsContent = ({ type, quantity, amount }) => {
-    const isIncome = type === 'income';
+const NotificationsContent = ({ type='', quantity, amount }) => {
+    
+    const isIncome = type === 'revenue';
     const {isVisible} = useContext(EyeContext);
+
     return (
         <div className="flex flex-col bg-gray-300 p-2 rounded-2xl mx-3 hover:bg-slate-400">
             <div className="flex items-center">
@@ -28,13 +30,13 @@ const NotificationsContent = ({ type, quantity, amount }) => {
 };
 
 
-const Notifications = () => {
+const Notifications = ({unpaid}) => {
     
-    let qntd_receitas_pendentes = 11;
-    let receitas_pendentes = 151;
+    let qntd_receitas_pendentes = unpaid.qntd_receitas_pendentes;
+    let receitas_pendentes = unpaid.receita_total_pendente;
 
-    let qntd_despesas_pendentes = 8;
-    let despesas_pendentes = 1503;
+    let qntd_despesas_pendentes = unpaid.qntd_despesas_pendentes;
+    let despesas_pendentes = unpaid.despesa_total_pendente;
 
     return (
         <div className="flex flex-col items-center">
@@ -46,7 +48,7 @@ const Notifications = () => {
                 <div className="flex justify-center">
                     {
                         qntd_receitas_pendentes > 0 ? 
-                        (<NotificationsContent type="income" quantity={qntd_receitas_pendentes} amount={receitas_pendentes} />) 
+                        (<NotificationsContent type="revenue" quantity={qntd_receitas_pendentes} amount={receitas_pendentes} />) 
                         :
                         <div className="bg-gray-300 p-2 rounded-2xl mx-3 w-36 text-sm">Nenhuma receita pendente</div>
                     }
@@ -58,7 +60,5 @@ const Notifications = () => {
         </div>
     );
 };
-
-
 
 export default Notifications;

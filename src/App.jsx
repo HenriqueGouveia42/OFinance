@@ -3,14 +3,13 @@ import { EyeProvider } from './contexts/EyeContext.jsx';
 import { TransactionTypeProvider } from "./contexts/TransactionTypeContext.jsx";
 import { BrowserRouter as Router, Route, Routes} from "react-router-dom";
 import { AuthProvider } from "./contexts/AuthContext.jsx";
+import { lazy, Suspense } from 'react';
 
 import ProtectedRoute from "./routes/ProtectedRoute.jsx";
 import PublicRoute from "./routes/PublicRoute.jsx";
 import SignUp from './SignUp/SignUp.jsx'
 import Login from './Login/Login.jsx'
 import Home from './Home/Home.jsx'
-
-import { lazy, Suspense } from 'react';
 
 const Month = lazy(() => import("./components/Month.jsx"));
 const NewTransaction = lazy(() => import("./components/NewTransaction.jsx"));

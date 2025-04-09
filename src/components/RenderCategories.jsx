@@ -1,13 +1,13 @@
-
-//Arquivos JSON que armazenam as receitas e as despesas cadastradas pelo usuário
-import RevenueCategories from "../assets/RevenueCategoriesOptions.json"
-import ExpenseCategories from "../assets/ExpenseCategoriesOptions.json"
 import { useState } from "react";
+import { useAuth } from '../contexts/AuthContext.jsx'
 
-//Renderiza as categorias cadastradas de receitas ou despesas
 const RenderCategories = ({type, handleCategorySelected}) =>{
-    //categories recebe a lista de receitas ou depesas, dependendo do tipo argumento type
-    const categories = type === 'revenue' ? RevenueCategories : ExpenseCategories;
+
+    const {userData} = useAuth();
+
+    var allcategories = userData.categories;
+
+    var rightcategories = allcategories.filter((cat) => cat.type === type )
 
     const [isListVisible, setIsListVisible] = useState(true)
     const toggleIsListVisible = () =>{
@@ -18,24 +18,25 @@ const RenderCategories = ({type, handleCategorySelected}) =>{
     const handleSetCategoryLabel = (label) =>{
         setCategoryLabel(label)
     }
+
     return(
         <>
             {isListVisible ?
                 <ul className="border border-black border-1 rounded-2xl">
-                    {categories.map((category) =>
-                        <li key={category.value}>
+                    {rightcategories.map((category) =>
+                        <li key={category.id}>
                             <button
                             className="account-icon"
                             onClick={() =>
                             {
-                                handleCategorySelected(category.value);
-                                handleSetCategoryLabel(category.label);
+                                handleCategorySelected(category.id);
+                                handleSetCategoryLabel(category.name);
                                 toggleIsListVisible();
                             }
                             
                             }
                             >
-                                {category.label}
+                                {category.name}
                             </button>
                         </li>
                     )}
