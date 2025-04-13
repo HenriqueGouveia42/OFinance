@@ -19,7 +19,7 @@ const NotificationsContent = ({ type='', quantity, amount }) => {
             </div>
             <div>
                 <div className="text-xs font-bold ">
-                    <h1>{isIncome ? 'Receitas Pendentes' : 'Despesas Pendentes'}</h1>
+                    <h1>{isIncome ? 'Receitas Pendentes (Não recebidas)' : 'Despesas Pendentes (Não pagas)'}</h1>
                     <h1 className={isIncome ? 'text-green-400' : 'text-red-400'}>
                         {isVisible ? amount.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' }) : ''}
                     </h1>

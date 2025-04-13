@@ -10,6 +10,8 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
+import { RiCoinsLine } from "react-icons/ri";
+
 
 import Toggle from "./Toggle";
 import Numpad from "./Numpad";
@@ -17,6 +19,7 @@ import DetailLine from "./DetailLine";
 import RenderCategories from "./RenderCategories";
 import RenderRepeatTypes from "./RenderRepeatTypes";
 import RenderAccounts from "./RenderAccounts";
+import RenderCurrencies from "./RenderCurrencies.jsx";
 import Datepicker from "react-tailwindcss-datepicker"
 
 import { useState } from "react";
@@ -28,52 +31,34 @@ import { TransactionTypeContext } from "../contexts/TransactionTypeContext.jsx";
 import { useNavigate } from "react-router-dom";
 
 import LoadingWrapper from "../wrappers/LoadingWrapper.jsx";
+import { useAuth } from "../contexts/AuthContext.jsx";
 
 const NewTransaction = () => {
 
-    const handleSubmit = async() =>{
-        try{
-            const response = await fetch('http://localhost:5000/transaction/create', {
-                method: 'POST',
-                credentials: 'include',
-                body: JSON.stringify(details), //Envia o objeto 'details' diretamente,
-            });
-            if(!response.ok){
-                const errorData = await response.json();
-                alert("Erro ao criar nova transacao");
-                alert(`Erro: ${errorData}`);
-                return;
-            }
-            alert("Transação criada com sucesso")
-            navigate("/month");
-        }catch(error){
-            console.error('Erro ao salvar os dados: ', error);
-        }
-    }
-
     const navigate = useNavigate();
+
+    const {fetchUserData} = useAuth();
 
     //Acessa o contexto
     const {transactionType} = useContext(TransactionTypeContext);
 
-    
     //Objeto que armazena todos os detalhes de uma transação que será enviada ao backend
     const [details, setDetails] = useState({
         amount: 0,
         type: transactionType,
         paid_out: true,
         payDay: null,
-        description: null,
+        description: "",
         categoryId: null,
         accountId: null,
-        attachment: null,
+        currencyId: null,
+        attachment: "",
         fixed: false,
         repeat: false,
         typeRepeat: null,
-        remindMe: null,
+        remindMe: "",
     });
 
-    
     const handleTransactionValueInput = (value) => {
         updateDetails('amount', parseFloat(value));
         handleIsNumpadVisible(); //Inverte o valor lógico de 'isNumpadVisible', fazendo Numpad 'sumir' e renderizar os detalhes da transação
@@ -85,6 +70,7 @@ const NewTransaction = () => {
             [field]: value,
         }));
     }
+
     //Função generica que atualiza os campos de details, tenham eles nos inputs a propriedade 'target', ou seja, sendo eventos, ou sejam valores diretos.
     const updateDetailsField = (field) => (eventOrValue) =>{
         const value = (eventOrValue?.target) ? eventOrValue.target.value : eventOrValue
@@ -94,6 +80,7 @@ const NewTransaction = () => {
     const handleInputDescription = updateDetailsField('description');
     const handleCategorySelected = updateDetailsField('categoryId');
     const handleAccountSelected = updateDetailsField('accountId');
+    const handleCurrencySelected = updateDetailsField('currencyId');
     const handleTypeRepeatClick = updateDetailsField('typeRepeat')
 
     //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai para o TransactionTypeContext
@@ -118,11 +105,36 @@ const NewTransaction = () => {
         updateDetails('type', transactionType);
     }, [transactionType]);
 
-    const [isSubmitButtonOn, setIsSubmitButtonOn] = useState(false);
-    
+    const handleSubmit = async() =>{
+        try{
+            details.payDay.startDate = new Date(details.payDay.startDate).toISOString();
+            details.payDay.endDate = new Date(details.payDay.endDate).toISOString();
+
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/transaction/create-transaction`, {
+                method: 'POST',
+                credentials: 'include',
+                headers:{
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify(details), //Envia o objeto 'details' diretamente,
+            })
+            
+            if(!response.ok){
+                throw new Error(`Erro na resposta: ${response.status}`);
+            }
+
+            await fetchUserData();
+
+            alert("Transacao criada com sucesso!");
+            navigate("/month");
+
+        }catch(error){
+            console.error('Erro ao salvar os dados: ', error);
+        }
+    }
+
     return(
         <div className="bg-maingray w-4/5  rounded-3xl p-3 justify-items-center">
-            {console.log(details)}
                 <div className= "flex flex-col w-[30rem] overflow-x-hidden">
                     <div className={`flex flex-col h-1/5 max-w-full ${transactionType === 'revenue' ? 'bg-green-500' : 'bg-red-500'}`}>
                             <div className="flex items-center">
@@ -222,6 +234,19 @@ const NewTransaction = () => {
                                     }}/>}
                                 />
                                 <DetailLine
+                                    icon={<RiCoinsLine size={20}/>}
+                                    content={
+                                        <LoadingWrapper>
+                                            <RenderCurrencies
+                                                handleCurrencySelected={handleCurrencySelected}
+                                            />
+                                        </LoadingWrapper>
+                                    }
+                                    action={<CiCirclePlus size={30} onClick={()=>{
+                                        navigate("/month")
+                                    }}/>}
+                                />
+                                <DetailLine
                                     icon={<FaPaperclip size={20}/>}
                                     content={
                                         <button><label>Anexo</label></button>
@@ -271,7 +296,6 @@ const NewTransaction = () => {
                                         type="submit"
                                         className="bg-slate-400 hover:bg-slate-600 h-full w-full  rounded-xl w-auto"
                                         disabled={false}
-                                        onClick={() => handleSubmit(details)}
                                     >
                                         Enviar
                                     </button>

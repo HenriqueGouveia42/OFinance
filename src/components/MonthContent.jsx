@@ -10,7 +10,7 @@ import { lazy} from 'react';
 const Notifications = lazy(() => import('./Notifications'));
 
 
-const MonthContent = ({monthYearTransaction, month, year}) => {
+const MonthContent = ({monthYearTransaction, month}) => {
 
     const { isVisible, toggleVisibility } = useContext(EyeContext);
 

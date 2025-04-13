@@ -6,13 +6,12 @@ export const AuthProvider = ({ children }) => {
 
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const [userData, setUserData] = useState(null);
-    const [loading, setLoading] = useState(false);
+    const [loading, setLoading] = useState(true);
 
     useEffect(() => {
+
         const verifyAndFetch = async () => {
-
             setLoading(true);
-
             try {
                 const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/login/status`, {
                     method: 'GET',
@@ -34,8 +33,6 @@ export const AuthProvider = ({ children }) => {
         };
         verifyAndFetch();
     }, []); //Por ter array de dependencias vazio, sempre que o componente for carregado, a função 'verifyToken' será executada
-
-    
 
     const login = () => {
         setIsAuthenticated(true);

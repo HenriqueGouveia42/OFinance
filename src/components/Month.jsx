@@ -38,7 +38,6 @@ const Month = () =>{
             if(response.ok){
                 const data = await response.json();
                 setMonthYearTransactions(data);
-                
             }else{
                 console.error('Falha ao buscar transacoes')
             }
@@ -96,8 +95,9 @@ const Month = () =>{
                     </div>
                 }
                 <div className=" bg-white rounded-3xl p-4 mt-5">
+                        {console.log(monthYearTransactions)}
                         <LoadingWrapper children={
-                            <MonthContent monthYearTransaction={monthYearTransactions} month={month} year={year} />}>
+                            <MonthContent monthYearTransaction={monthYearTransactions} month={month} />}>
                         </LoadingWrapper>
                         
                 </div>

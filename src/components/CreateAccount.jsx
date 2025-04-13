@@ -1,10 +1,14 @@
-import { useState } from "react";
+import { useState, useContext } from "react";
 import { FaArrowLeftLong } from "react-icons/fa6";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../contexts/AuthContext";
+ 
 
 const CreateAccount = () =>{
 
     const navigate = useNavigate();
+
+    const { fetchUserData } = useAuth()
 
     const handleSubmit = async (e)=>{
         e.preventDefault()
@@ -17,6 +21,7 @@ const CreateAccount = () =>{
             credentials: 'include', //Permite cookies HTTP-Only
         })
         if(createAcc.ok){
+            await fetchUserData();
             alert("Conta criada com sucesso");
         }else{
             alert("Não foi possivel criar a conta");

@@ -1,7 +1,7 @@
 import { useState } from "react"
 import { useAuth } from "../contexts/AuthContext"
 
-const RenderAccounts = ({handleAccountSelected}) =>{
+const RenderCurrencies = ({handleCurrencySelected}) =>{
 
     const {userData} = useAuth();
     
@@ -11,30 +11,30 @@ const RenderAccounts = ({handleAccountSelected}) =>{
         setIsListVisible(prev => !prev)
     }
 
-    const [accountLabel, setAccountLabel] = useState(null)
-    const handleSetAccountLabel = (label) =>{
-        setAccountLabel(label)
+    const [currencyLabel, setCurrencyLabel] = useState(null)
+    const handleSetCurrencyLabel = (label) =>{
+        setCurrencyLabel(label)
     }
 
-    const accounts = userData.accounts;
+    const currencies = userData.currencies;
 
     return(
         <>
             {isListVisible ?
                 <ul className="border border-black border-1  rounded-2xl">
-                    {accounts.map((acc) =>
-                        <li key={acc.id}>
+                    {currencies.map((curr) =>
+                        <li key={curr.id}>
                             <button
                             className="account-icon"
                             onClick={() => 
                             {
-                                handleAccountSelected(acc.id);
-                                handleSetAccountLabel(acc.name);
+                                handleCurrencySelected(curr.id);
+                                handleSetCurrencyLabel(curr.name);
                                 toggleIsListVisible();
                             }
                             }
                             >
-                                {acc.name}
+                                {curr.name}
                             </button>
                         </li>
                     )}
@@ -44,10 +44,10 @@ const RenderAccounts = ({handleAccountSelected}) =>{
                     className="border border-black border-1 category-icon"
                     onClick={toggleIsListVisible}
                     >
-                        {accountLabel}
+                        {currencyLabel}
                 </button>
             }
         </>
     )
 }
-export default RenderAccounts
+export default RenderCurrencies

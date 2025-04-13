@@ -1,73 +1,87 @@
 import { BsCashCoin } from "react-icons/bs";
 import { HiCreditCard } from "react-icons/hi2";
 import { CiCirclePlus } from "react-icons/ci";
+import { GiWallet } from "react-icons/gi";
 import { useContext, useState } from "react";
 import { TransactionTypeContext } from "../contexts/TransactionTypeContext";
 import { useNavigate } from "react-router-dom";
 
-const SideBar = () =>{
-
+const SideBar = () => {
     const [newRevenueOrExpense, setNewRevenueOrExpense] = useState(false);
-    const toggleNewRevenueOrExpense = () =>{
+    const toggleNewRevenueOrExpense = () => {
         setNewRevenueOrExpense((prevState) => !prevState);
-    }
-    const {handleTransactionType} = useContext(TransactionTypeContext);
-    
+    };
+
+    const { handleTransactionType } = useContext(TransactionTypeContext);
     const navigate = useNavigate();
 
-    const handleNavigateToNewTransaction = (type) =>{
+    const handleNavigateToNewTransaction = (type) => {
         handleTransactionType(type);
         navigate("/newtransaction");
         toggleNewRevenueOrExpense();
-    }
-    return(
-        <div className="fixed top-16 z-10 flex flex-col left-0 h-screen max-w-64  bg-primary text-secondary shadow-lg p-2">
-            <div className="relative flex flex-col align-middle justify-center items-start space-y-8">
+    };
+
+    return (
+        <div className="fixed top-16 left-0 z-10 h-screen max-w-64 bg-primary text-secondary shadow-lg p-2">
+            <div className="flex flex-col space-y-8">
+                {/* Botão para Nova Receita/Despesa */}
                 <button className="icon" onClick={toggleNewRevenueOrExpense}>
                     <div className="flex items-center">
-                        <div>
-                            <CiCirclePlus size="30"/>
-                        </div>
-                        <div className="text-white ml-5 break-words text-xs">
-                            <p>Nova receita/despesa</p>
-                        </div>
+                        <CiCirclePlus size="30" />
+                        <span className="ml-5 text-white text-xs break-words">
+                            Nova receita/despesa
+                        </span>
                     </div>
                 </button>
-                {newRevenueOrExpense &&
-                    <div className="absolute flex flex-col bottom-32 left-48 bg-white rounded-xl shadow-lg p-2 min-w-[10rem]">
-                        <button className="text-sm hover:bg-gray-200 rounded p-1" onClick={() => {
-                            handleNavigateToNewTransaction("revenue");
-                            }}>Receita
+
+                {/* Submenu de Receita ou Despesa */}
+                {newRevenueOrExpense && (
+                    <div className="absolute bottom-32 left-48 bg-white rounded-xl shadow-lg p-2 min-w-[10rem]">
+                        <button 
+                            className="text-sm hover:bg-gray-200 rounded p-1" 
+                            onClick={() => handleNavigateToNewTransaction("revenue")}
+                        >
+                            Receita
                         </button>
-                        <button className="text-sm hover:bg-gray-200 rounded p-1" onClick={() => {
-                            handleNavigateToNewTransaction("expense");
-                            }}>Despesa
+                        <button 
+                            className="text-sm hover:bg-gray-200 rounded p-1" 
+                            onClick={() => handleNavigateToNewTransaction("expense")}
+                        >
+                            Despesa
                         </button>
                     </div>
-                }
-                <button className="icon" onClick={() => {navigate("/accounts")}}>
+                )}
+
+                {/* Botão para Contas */}
+                <button className="icon" onClick={() => navigate("/accounts")}>
                     <div className="flex items-center">
-                        <div>
-                            <BsCashCoin size="30"/>
-                        </div>
-                        <div className="text-white ml-5 break-words text-xs">
-                            <p>Contas</p>
-                        </div>
+                        <BsCashCoin size="30" />
+                        <span className="ml-5 text-white text-xs break-words">Contas</span>
                     </div>
                 </button>
-                <button className="icon" onClick={() => {navigate("/credit-cards")}}>
+
+                {/* Botão para Categorias de Receitas e Despesas */}
+                <button className="icon" onClick={() => navigate("/categories")}>
                     <div className="flex items-center">
-                        <div>
-                            <HiCreditCard size="30"/>
-                        </div>
-                        <div className="text-white ml-5 break-words text-xs">
-                            <p>Cartões de Crédito</p>
-                        </div>
+                        <GiWallet size="30" />
+                        <span className="ml-5 text-white text-xs break-words">
+                            Categorias de receitas e depesas
+                        </span>
+                    </div>
+                </button>
+
+                {/* Botão para Cartões de Crédito */}
+                <button className="icon" onClick={() => navigate("/credit-cards")}>
+                    <div className="flex items-center">
+                        <HiCreditCard size="30" />
+                        <span className="ml-5 text-white text-xs break-words">
+                            Cartões de Crédito
+                        </span>
                     </div>
                 </button>
             </div>
-            
         </div>
-    )
-}
-export default SideBar
+    );
+};
+
+export default SideBar;
