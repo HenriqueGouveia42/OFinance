@@ -17,7 +17,6 @@ export const AuthProvider = ({ children }) => {
                     method: 'GET',
                     credentials: 'include', //Permite o envio automatico dos cookies
                 });
-
                 if (response.ok) {
                     login();
                     await fetchUserData();
@@ -32,7 +31,7 @@ export const AuthProvider = ({ children }) => {
             }
         };
         verifyAndFetch();
-    }, []); //Por ter array de dependencias vazio, sempre que o componente for carregado, a função 'verifyToken' será executada
+    }, []); //Por ter array de dependencias vazio, sempre que o componente for carregado, a função 'verifyAndFetch' será executada
 
     const login = () => {
         setIsAuthenticated(true);

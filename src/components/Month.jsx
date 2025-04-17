@@ -20,7 +20,7 @@ const Month = () =>{
     const currentYear = new Date().getFullYear();
     const [year, setYear] = useState(currentYear);
 
-    const [monthYearTransactions, setMonthYearTransactions] = useState(null);
+    const [paidMonthYearTransactions, setPaidMonthYearTransactions] = useState(null);
 
     const handleReadMonthTransactions = async() =>{
         try{
@@ -30,14 +30,14 @@ const Month = () =>{
                 year: year
             }).toString();
 
-            const response = await fetch(`${import.meta.env.VITE_API_URL}/transaction/readMonthTransaction?${queryParams}`,{
+            const response = await fetch(`${import.meta.env.VITE_API_URL}/transaction/readPaidMonthTransaction?${queryParams}`,{
                 method: 'GET',
                 credentials: 'include', //Permite o envio de cookies Http Only
             });
 
             if(response.ok){
                 const data = await response.json();
-                setMonthYearTransactions(data);
+                setPaidMonthYearTransactions(data);
             }else{
                 console.error('Falha ao buscar transacoes')
             }
@@ -95,9 +95,8 @@ const Month = () =>{
                     </div>
                 }
                 <div className=" bg-white rounded-3xl p-4 mt-5">
-                        {console.log(monthYearTransactions)}
                         <LoadingWrapper children={
-                            <MonthContent monthYearTransaction={monthYearTransactions} month={month} />}>
+                            <MonthContent paidMonthYearTransactions={paidMonthYearTransactions} month={month} />}>
                         </LoadingWrapper>
                         
                 </div>

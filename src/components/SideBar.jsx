@@ -36,7 +36,7 @@ const SideBar = () => {
 
                 {/* Submenu de Receita ou Despesa */}
                 {newRevenueOrExpense && (
-                    <div className="absolute bottom-32 left-48 bg-white rounded-xl shadow-lg p-2 min-w-[10rem]">
+                    <div className="absolute left-48 bg-white rounded-xl shadow-lg p-2 min-w-[10rem]">
                         <button 
                             className="text-sm hover:bg-gray-200 rounded p-1" 
                             onClick={() => handleNavigateToNewTransaction("revenue")}

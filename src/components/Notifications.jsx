@@ -1,16 +1,16 @@
 import { FaArrowCircleDown, FaArrowCircleUp } from "react-icons/fa";
 import { GoArrowDown } from "react-icons/go";
-import { useContext } from 'react';
+import { useContext, useEffect, useState } from 'react';
 import { EyeContext } from "../contexts/EyeContext";
 
-
 const NotificationsContent = ({ type='', quantity, amount }) => {
-    
+
+
     const isIncome = type === 'revenue';
     const {isVisible} = useContext(EyeContext);
 
     return (
-        <div className="flex flex-col bg-gray-300 p-2 rounded-2xl mx-3 hover:bg-slate-400">
+        <div className="flex flex-col bg-gray-300 p-2 rounded-2xl mx-3 hover:bg-gray-500" onClick={() =>{alert("Eu vou exibir as transacoes pendentes")}}>
             <div className="flex items-center">
                 {isIncome ? <FaArrowCircleUp size={14} /> : <FaArrowCircleDown size={14} /> }
                 <h1 className={`rounded-2xl p-1 ml-16 items-center text-xs ${isIncome ? 'bg-green-400' : 'bg-red-400'}`}>
@@ -30,31 +30,62 @@ const NotificationsContent = ({ type='', quantity, amount }) => {
 };
 
 
-const Notifications = ({unpaid}) => {
+const Notifications = () => {
+
+    const [unpaid, setUnpaid] = useState();
+    const [loading, setLoading] = useState(true);
     
-    let qntd_receitas_pendentes = unpaid.qntd_receitas_pendentes;
-    let receitas_pendentes = unpaid.receita_total_pendente;
+    useEffect(() => {
+        const getUnpaidTransactions = async () => {
+            try {
+                const fetchUnpaidTransactions = await fetch(`${import.meta.env.VITE_API_URL}/transaction/readUnpaidTransactions`, {
+                    method: 'GET',
+                    credentials: 'include'
+                });
+    
+                if (fetchUnpaidTransactions.ok) {
+                    const data = await fetchUnpaidTransactions.json();
+                    setUnpaid(data);
+                    setLoading(false);
+                }
+            } catch (error) {
+                console.error('Erro ao buscar transações não pagas', error);
+            }
+        };
+        getUnpaidTransactions();
+    }, []);
+    
+    if (loading || unpaid === undefined || unpaid === null) {
+        return <p>Carregando..</p>;
+    }
+    
+    
+    let pendingRevenueCount = unpaid.pendingRevenueCount;
+    let pendingRevenueTotal = unpaid.pendingRevenueTotal;
 
-    let qntd_despesas_pendentes = unpaid.qntd_despesas_pendentes;
-    let despesas_pendentes = unpaid.despesa_total_pendente;
-
+    let pendingExpenseCount = unpaid.pendingExpenseCount;
+    let pendingExpensesTotal = unpaid.pendingExpensesTotal;
+    
     return (
         <div className="flex flex-col items-center">
-            <div className="flex mt-5 space-x-2">
-                <h1 className="font-bold text-xs">Pendências e alertas</h1>
-                <GoArrowDown size={20} className="bg-slate-500 rounded-2xl" />
+            <div className="flex flex-col text-xs items-center font-bold">
+                <div className="flex mt-5 space-x-2">
+                    <h1 >Não recebidos / Não pagos</h1>
+                    <GoArrowDown size={20} className="bg-slate-500 rounded-2xl" />
+                </div>
+                <h1>(Todos os meses)</h1>
             </div>
             <div className="mt-5 flex justify-start">
                 <div className="flex justify-center">
                     {
-                        qntd_receitas_pendentes > 0 ? 
-                        (<NotificationsContent type="revenue" quantity={qntd_receitas_pendentes} amount={receitas_pendentes} />) 
+                        pendingRevenueCount > 0 ? 
+                        (<NotificationsContent type="revenue" quantity={pendingRevenueCount} amount={pendingRevenueTotal} />) 
                         :
-                        <div className="bg-gray-300 p-2 rounded-2xl mx-3 w-36 text-sm">Nenhuma receita pendente</div>
+                        <div className="bg-gray-300 p-2 rounded-2xl mx-3 w-36 text-sm hover:bg-gray-500" onClick={(() => alert("Vou mostrar as receitas pendentes"))}>Nenhuma receita pendente (Não recebida)</div>
                     }
-                    {qntd_despesas_pendentes > 0 ? (
-                        <NotificationsContent type="expense" quantity={qntd_despesas_pendentes} amount={despesas_pendentes} />
-                    ) : <div className="bg-gray-300 p-2 rounded-2xl mx-3 w-36 text-sm">Nenhuma despesa pendente</div>}
+                    {pendingExpenseCount > 0 ? (
+                        <NotificationsContent type="expense" quantity={pendingExpenseCount} amount={pendingExpensesTotal} />
+                    ) : <div className="bg-gray-300 p-2 rounded-2xl mx-3 w-36 text-sm hover:bg-gray-500" onClick={(() => alert("Vou mostrar as despesas pendentes"))} >Nenhuma despesa pendente (Não paga)</div>}
                 </div>
             </div>
         </div>

@@ -14,11 +14,10 @@ const Month = lazy(() => import("./components/Month.jsx"));
 const NewTransaction = lazy(() => import("./components/NewTransaction.jsx"));
 const Accounts = lazy(() => import("./components/Accounts.jsx"));
 const CreditCards = lazy(() => import("./components/CreditCards.jsx"));
-const NewExpenseOrRevenueType = lazy(() => import("./components/NewExpenseOrRevenueType.jsx"));
 const CreateAccount = lazy(() => import("./components/CreateAccount.jsx"));
 const LoggedInLayout = lazy(() => import("./components/LoggedInLayout.jsx"));
 const Categories = lazy(() => import("./components/Categories.jsx"));
-
+const CreateCategory = lazy(() => import("./components/CreateCategory.jsx"));
 
 import LoadingWrapper from './wrappers/LoadingWrapper.jsx';
 
@@ -40,10 +39,10 @@ function App() {
                   </LoadingWrapper>
                 }/>
                 <Route path="/accounts" element={<Accounts/>} />
-                <Route path="categories" element={<Categories/>} />
                 <Route path="create-account" element={<CreateAccount/>} />
+                <Route path="categories" element={<Categories/>} />
+                <Route path="create-category" element={<CreateCategory/>} />
                 <Route path="/credit-cards" element={<CreditCards/>}/>
-                <Route path="/new-expense-or-revenue-type" element={<NewExpenseOrRevenueType/>}/>
               </Route>
             </Routes>
             </TransactionTypeProvider>

@@ -216,7 +216,7 @@ const NewTransaction = () => {
                                         </LoadingWrapper>                   
                                     }
                                     action={<CiCirclePlus size={30} onClick={()=>{
-                                        navigate("/new-expense-or-revenue-type")
+                                        navigate("/categories")
                                     }}/>}
                                 />
                                 <DetailLine
