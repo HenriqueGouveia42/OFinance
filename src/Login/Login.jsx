@@ -90,7 +90,7 @@ const Login = () => {
                     {/* Botões Login / SignUp */}
                     <div className="flex justify-center space-x-6 mb-6">
                         <button
-                            className={`px-5 py-2 rounded-full transition ${
+                            className={`px-5 py-2 rounded-full transition hover:shadow-2xl hover:scale-105 ${
                                 loginForm === "login"
                                     ? "bg-gray-300 font-semibold"
                                     : "hover:bg-gray-200 text-gray-600"
@@ -100,7 +100,7 @@ const Login = () => {
                             Login
                         </button>
                         <button
-                            className={`px-5 py-2 rounded-full transition ${
+                            className={`px-5 py-2 rounded-full transition hover:shadow-2xl hover:scale-105 ${
                                 loginForm === "signup"
                                     ? "bg-gray-300 font-semibold"
                                     : "hover:bg-gray-200 text-gray-600"
@@ -130,7 +130,7 @@ const Login = () => {
                             />
                             <button
                                 type="submit"
-                                className="bg-orange-500 text-white py-2 rounded-full hover:bg-orange-600 transition duration-300"
+                                className="bg-orange-500 text-white py-2 rounded-full hover:bg-orange-600 hover:shadow-2xl hover:scale-105 transition duration-300"
                             >
                                 Entrar
                             </button>
