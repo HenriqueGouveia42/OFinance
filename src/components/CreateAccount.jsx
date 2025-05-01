@@ -8,6 +8,7 @@ const CreateAccount = () => {
     const { fetchUserData } = useAuth();
     const [accountName, setAccountName] = useState("");
 
+
     const handleSubmit = async (e) => {
         e.preventDefault();
         const createAcc = await fetch("http://localhost:5000/accounts/create-account", {
