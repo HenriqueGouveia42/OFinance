@@ -48,8 +48,9 @@ const SignUp = () => {
         e.preventDefault();
 
         if (validateForm()) {
+
             try {
-                const response = await fetch(`${import.meta.env.VITE_API_URL}/signup`, {
+                const response = await fetch(`${import.meta.env.VITE_API_URL}/auth/signup`, {
                     method: "POST",
                     headers: {
                         "Content-Type": "application/json",
@@ -120,13 +121,14 @@ const SignUp = () => {
 
                         <button
                             type="submit"
-                            className="bg-orange-500 text-white py-2 rounded-full hover:bg-orange-600 transition duration-300"
+                            className="bg-orange-500 text-white py-2 rounded-full hover:bg-orange-600 hover:shadow-2xl hover:scale-105 transition duration-300"
                         >
                             Enviar
                         </button>
                     </form>
                 </div>
             )}
+            {console.log({email, name, password})}
         </div>
     );
 };
