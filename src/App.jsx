@@ -39,9 +39,9 @@ function App() {
                   </LoadingWrapper>
                 }/>
                 <Route path="/accounts" element={<Accounts/>} />
-                <Route path="create-account" element={<CreateAccount/>} />
-                <Route path="categories" element={<Categories/>} />
-                <Route path="create-category" element={<CreateCategory/>} />
+                <Route path="/create-account" element={<CreateAccount/>} />
+                <Route path="/categories" element={<Categories/>} />
+                <Route path="/create-category" element={<CreateCategory/>} />
                 <Route path="/credit-cards" element={<CreditCards/>}/>
               </Route>
             </Routes>

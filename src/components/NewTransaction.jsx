@@ -10,8 +10,6 @@ import { MdOutlinePushPin } from "react-icons/md";
 import { FaRepeat } from "react-icons/fa6";
 import { CiBellOn } from "react-icons/ci";
 import { CiCirclePlus } from "react-icons/ci";
-import { RiCoinsLine } from "react-icons/ri";
-
 
 import Toggle from "./Toggle";
 import Numpad from "./Numpad";
@@ -19,7 +17,6 @@ import DetailLine from "./DetailLine";
 import RenderCategories from "./RenderCategories";
 import RenderRepeatTypes from "./RenderRepeatTypes";
 import RenderAccounts from "./RenderAccounts";
-import RenderCurrencies from "./RenderCurrencies.jsx";
 import Datepicker from "react-tailwindcss-datepicker"
 
 import { useState } from "react";
@@ -51,7 +48,6 @@ const NewTransaction = () => {
         description: "",
         categoryId: null,
         accountId: null,
-        currencyId: null,
         attachment: "",
         fixed: false,
         repeat: false,
@@ -80,7 +76,6 @@ const NewTransaction = () => {
     const handleInputDescription = updateDetailsField('description');
     const handleCategorySelected = updateDetailsField('categoryId');
     const handleAccountSelected = updateDetailsField('accountId');
-    const handleCurrencySelected = updateDetailsField('currencyId');
     const handleTypeRepeatClick = updateDetailsField('typeRepeat')
 
     //Função que alterna entre renderizar o componente filho Numpad, que recebe e repassa o input numérico do usuário para o pai para o TransactionTypeContext
@@ -231,19 +226,6 @@ const NewTransaction = () => {
                                     }
                                     action={<CiCirclePlus size={30} onClick={()=>{
                                         navigate("/accounts")
-                                    }}/>}
-                                />
-                                <DetailLine
-                                    icon={<RiCoinsLine size={20}/>}
-                                    content={
-                                        <LoadingWrapper>
-                                            <RenderCurrencies
-                                                handleCurrencySelected={handleCurrencySelected}
-                                            />
-                                        </LoadingWrapper>
-                                    }
-                                    action={<CiCirclePlus size={30} onClick={()=>{
-                                        navigate("/month")
                                     }}/>}
                                 />
                                 <DetailLine
