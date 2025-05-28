@@ -80,7 +80,13 @@ const Login = () => {
                 {/* Texto e imagem do lado esquerdo */}
                 <div className="flex flex-col items-center text-center max-w-sm">
                     <p className="text-lg text-gray-700 mb-4">
-                        Tome de volta o controle de sua vida financeira
+                        Tome de volta o controle de sua vida financeira.
+                    </p>
+                    <p className="text-lg text-gray-700 mb-4">
+                        Receitas, despesas e cartões de crédito.
+                    </p>
+                    <p className="text-lg text-gray-700 mb-4">
+                        Tudo de um só lugar.
                     </p>
                     <img src={loginlogo} alt="Login visual" className="w-64" />
                 </div>
